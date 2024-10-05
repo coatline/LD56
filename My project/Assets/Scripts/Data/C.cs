@@ -5,6 +5,8 @@ using UnityEngine;
 
 public static class C
 {
+    public static Vector2 GetCameraSizeInUnits(Camera cam) => new Vector2(cam.orthographicSize * cam.aspect, cam.orthographicSize);
+
     public static GameObject GobUnderMouse(Vector2 mousePos)
     {
         RaycastHit2D hit = Physics2D.Raycast(mousePos, new Vector3(0,0,1));

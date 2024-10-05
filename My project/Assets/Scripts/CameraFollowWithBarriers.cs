@@ -5,47 +5,30 @@ using UnityEngine;
 [DefaultExecutionOrder(1)]
 public class CameraFollowWithBarriers : MonoBehaviour
 {
-    public Transform bottomLeftBarrier;
-    public Transform topRightBarrier;
-
+    [SerializeField] Camera cam;
     [SerializeField] bool offsetBarrierPositionsToFitCameraSize;
     [SerializeField] float manualMovementSpeed;
     [SerializeField] bool useCoords;
-    public Vector2 bottomLeftBarrierCoords;
-    public Vector2 topRightBarrierCoords;
+    [SerializeField] Vector2 bottomLeftBarrierCoords;
+    [SerializeField] Vector2 topRightBarrierCoords;
 
     [SerializeField] Transform followObject;
-    public Vector2 cameraSizeInUnits;
 
     [SerializeField] bool doBarriers = true;
 
     [Range(.01f, 1f)]
     [SerializeField] float speed;
-
-    private void Awake()
-    {
-        var cam = GetComponent<Camera>();
-
-        cameraSizeInUnits.x = cam.orthographicSize * cam.aspect;
-        cameraSizeInUnits.y = cam.orthographicSize;
-    }
-
-    private void Start()
-    {
-        if (offsetBarrierPositionsToFitCameraSize && topRightBarrier && bottomLeftBarrier)
-        {
-            bottomLeftBarrier.transform.position += new Vector3((cameraSizeInUnits.x), cameraSizeInUnits.y, 0);
-            topRightBarrier.transform.position -= new Vector3((cameraSizeInUnits.x), cameraSizeInUnits.y, 0);
-        }
-
-        if (!useCoords && doBarriers)
-            if (!bottomLeftBarrier || !topRightBarrier) { Debug.LogWarning("You forgot to assign barriers!"); doBarriers = false; }
-    }
+    [SerializeField] float zoomSmoothTime;
+    [SerializeField] float zoomSpeed;
+    [SerializeField] float minZoom;
+    [SerializeField] float maxZoom;
+    [SerializeField] float focusZoomInAmount;
+    float zoomVelocity;
+    float targetZoom;
 
     void FixedUpdate()
     {
         Vector3 movement = Vector3.zero;
-
         movement = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * Time.deltaTime * manualMovementSpeed;
 
         if (followObject != null)
@@ -56,61 +39,26 @@ public class CameraFollowWithBarriers : MonoBehaviour
                 movement = new Vector3(followObject.position.x - transform.position.x, followObject.position.y - transform.position.y);
         }
 
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+
+        if (scrollInput != 0f)
+        {
+            targetZoom -= scrollInput * zoomSpeed;
+            targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);  // Clamping the zoom level
+        }
+
+        cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, targetZoom, ref zoomVelocity, zoomSmoothTime);
+
         Vector3 blbc = bottomLeftBarrierCoords;
         Vector3 trbc = topRightBarrierCoords;
 
         if (doBarriers)
-        {
-            if (!useCoords)
-            {
-                if (bottomLeftBarrier)
-                    blbc = bottomLeftBarrier.position;
-
-                if (topRightBarrier)
-                    trbc = topRightBarrier.position;
-            }
-
             if (offsetBarrierPositionsToFitCameraSize)
             {
-                blbc += new Vector3((cameraSizeInUnits.x), cameraSizeInUnits.y, 0);
-                trbc -= new Vector3((cameraSizeInUnits.x), cameraSizeInUnits.y, 0);
+                Vector3 camSize = C.GetCameraSizeInUnits(cam);
+                blbc += camSize;
+                trbc -= camSize;
             }
-
-            #region OldClamping
-            //if (transform.position.x <= blbc.x)
-            //{
-            //    if (movement.x < 0)
-            //    {
-            //        transform.position = new Vector3(blbc.x, transform.position.y, -10);
-            //        movement.x = 0;
-            //    }
-            //}
-            //if (transform.position.y <= blbc.y)
-            //{
-            //    if (movement.y < 0)
-            //    {
-            //        transform.position = new Vector3(transform.position.x, blbc.y, -10);
-            //        movement.y = 0;
-            //    }
-            //}
-            //if (transform.position.x >= trbc.x)
-            //{
-            //    if (movement.x > 0)
-            //    {
-            //        transform.position = new Vector3(trbc.x, transform.position.y, -10);
-            //        movement.x = 0;
-            //    }
-            //}
-            //if (transform.position.y >= trbc.y)
-            //{
-            //    if (movement.y > 0)
-            //    {
-            //        transform.position = new Vector3(transform.position.x, trbc.y, -10);
-            //        movement.y = 0;
-            //    }
-            //} 
-            #endregion
-        }
 
         Vector3 newPos = (transform.position + (movement * speed));
 
@@ -123,5 +71,6 @@ public class CameraFollowWithBarriers : MonoBehaviour
     public void SetFollow(Transform follow)
     {
         followObject = follow;
+        targetZoom = Mathf.Clamp(targetZoom + focusZoomInAmount, minZoom, maxZoom);  // Clamping the zoom level
     }
 }

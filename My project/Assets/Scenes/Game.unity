@@ -397,6 +397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c678220b80d18946aa99eadeee4c1ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camFollow: {fileID: 519420033}
   cam: {fileID: 519420031}
 --- !u!1 &519420028
 GameObject:
@@ -505,7 +506,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 2.8125
+  orthographic size: 3.08
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -548,17 +549,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba16c7020e2959d4a9e50bc87702cbc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bottomLeftBarrier: {fileID: 0}
-  topRightBarrier: {fileID: 0}
+  cam: {fileID: 519420031}
   offsetBarrierPositionsToFitCameraSize: 0
-  manualMovementSpeed: 0
+  manualMovementSpeed: 1
   useCoords: 1
   bottomLeftBarrierCoords: {x: -10, y: -5}
   topRightBarrierCoords: {x: 10, y: 0}
   followObject: {fileID: 0}
-  cameraSizeInUnits: {x: 0, y: 0}
   doBarriers: 1
   speed: 1
+  zoomSmoothTime: 0.1
+  zoomSpeed: 1
+  minZoom: 2
+  maxZoom: 5
+  focusZoomInAmount: 0.25
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0

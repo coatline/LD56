@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Inputs : MonoBehaviour
 {
+    [SerializeField] CameraFollowWithBarriers camFollow;
     [SerializeField] Camera cam;
 
     void Update()
@@ -14,10 +15,13 @@ public class Inputs : MonoBehaviour
             if (gob != null)
             {
                 Breakable b = gob.GetComponent<Breakable>();
+                Flemington flem = gob.GetComponent<Flemington>();
                 print($"{gob.name} {b}");
 
                 if (b != null)
                     b.Hit();
+                else if (flem != null)
+                    camFollow.SetFollow(flem.transform);
             }
         }
 
