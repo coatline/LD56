@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemGenerator : MonoBehaviour
+public class ChunkGenerator : MonoBehaviour
 {
     [SerializeField] float itemSpawnInterval;
     float timer;
@@ -19,7 +19,7 @@ public class ItemGenerator : MonoBehaviour
 
         if (timer >= itemSpawnInterval)
         {
-            Village.I.CreateItemAt(transform.position);
+            Village.I.CreateChunkAt(transform.position);
             timer = 0;
         }
     }

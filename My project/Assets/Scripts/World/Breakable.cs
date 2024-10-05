@@ -23,10 +23,10 @@ public class Breakable : MonoBehaviour
         while (timer < shakeTime)
         {
             sr.transform.position = new Vector3(Mathf.Sin(timer), Mathf.Cos(timer)) * shakeCurve.Evaluate(timer / shakeTime);
+            timer += Time.deltaTime;
+            yield return null;
         }
 
         sr.transform.position = Vector3.zero;
-
-        yield return null;
     }
 }

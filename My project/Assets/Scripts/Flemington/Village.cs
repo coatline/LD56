@@ -5,9 +5,11 @@ using UnityEngine;
 public class Village : Singleton<Village>
 {
     [SerializeField] Flemington flemingtonPrefab;
+    [SerializeField] Chunk chunkPrefab;
     [SerializeField] Item itemPrefab;
 
     List<Flemington> flemingtons;
+    List<Chunk> chunks;
     List<Item> items;
     List<Task> tasks;
 
@@ -16,6 +18,7 @@ public class Village : Singleton<Village>
         base.Awake();
 
         flemingtons = new List<Flemington>();
+        chunks = new List<Chunk>();
         items = new List<Item>();
         tasks = new List<Task>();
     }
@@ -24,6 +27,13 @@ public class Village : Singleton<Village>
     {
         Flemington newFleminton = Instantiate(flemingtonPrefab, pos, Quaternion.identity);
         flemingtons.Add(newFleminton);
+    }
+
+    public Chunk CreateChunkAt(Vector3 pos)
+    {
+        Chunk newChunk = Instantiate(chunkPrefab, transform.position, Quaternion.identity);
+        chunks.Add(newChunk);
+        return newChunk;
     }
 
     public Item CreateItemAt(Vector3 pos)

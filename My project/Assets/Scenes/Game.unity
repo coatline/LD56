@@ -687,6 +687,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 0
   flemingtonPrefab: {fileID: 5697146020409053839, guid: c787cb9321c23204a941f96c05f785f1, type: 3}
+  chunkPrefab: {fileID: 4206513715389558863, guid: 9902dd2f9ba4a6f40b4cdf0c93aef9f3, type: 3}
   itemPrefab: {fileID: 468646428714853985, guid: 82f46ea331be09847ad2817b3dc894ed, type: 3}
 --- !u!1 &699273356
 GameObject:
