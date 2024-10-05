@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6070162816317346285}
   - component: {fileID: 9033388367721033239}
   - component: {fileID: 2458909893411600469}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Flimenton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,11 +48,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minStats:
-    speed: 0.9
+    speed: 25
     carryingCapacity: 0.9
   maxStats:
-    speed: 1.1
+    speed: 50
     carryingCapacity: 1.1
+  rb: {fileID: 2458909893411600469}
 --- !u!212 &6070162816317346285
 SpriteRenderer:
   m_ObjectHideFlags: 0

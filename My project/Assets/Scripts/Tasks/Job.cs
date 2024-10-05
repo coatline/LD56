@@ -3,28 +3,31 @@ using UnityEngine;
 
 public abstract class Job
 {
-    public event System.Action Completed;
-    protected List<Task> availableTasks;
+    public event System.Action<Job> OnCompleted;
+    protected readonly List<Task> availableTasks;
+
+    public bool Done { get; private set; }
 
     public Job()
     {
+        availableTasks = new List<Task>();
     }
 
-    protected virtual void OnCompleted()
+    protected virtual void Completed()
     {
-        Completed.Invoke();
+        OnCompleted.Invoke(this);
     }
 
-    public Task TakeAvailableTask()
+    public Task GetAvailableTask()
     {
         if (availableTasks.Count == 0)
             return null;
-        availableTasks.RemoveAt(0);
         return availableTasks[0];
     }
 
     public void TakeTask(Task task) => availableTasks.Remove(task);
 
+    // Probably won't use this
     public Task GetClosestTask(Vector2 myPos)
     {
         Task closestTask = null;
@@ -44,10 +47,19 @@ public abstract class Job
         return closestTask;
     }
 
-    public abstract void TaskCompleted();
-
     public void ReturnTask(Task task)
     {
         availableTasks.Add(task);
+    }
+
+    protected virtual void CreateTask(Task task)
+    {
+        availableTasks.Add(task);
+        task.OnCompleted += TaskCompleted;
+    }
+
+    protected virtual void TaskCompleted(Task task)
+    {
+        availableTasks.Remove(task);
     }
 }

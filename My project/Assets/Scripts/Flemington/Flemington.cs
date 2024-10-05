@@ -9,15 +9,14 @@ public class Flemington : MonoBehaviour
     [SerializeField] Stats maxStats;
     [SerializeField] Rigidbody2D rb;
 
-    Vector3 destination;
-    bool traveling;
+    public Vector3 Destination { get; private set; }
+    public bool Traveling { get; private set; }
 
     Dictionary<Need, float> needToValue;
     StateMachine stateMachine;
     Flemington toTalkTo;
     List<Need> needs;
     Stats stats;
-    Task task;
 
     void Awake()
     {
@@ -25,6 +24,8 @@ public class Flemington : MonoBehaviour
         needToValue = new Dictionary<Need, float>();
         needs = new List<Need>(DataLibrary.I.Needs.UnsortedArray.ToList());
         stateMachine = new StateMachine(this);
+
+        name = C.GetRandomName();
 
         for (int i = 0; i < needs.Count; i++)
         {
@@ -46,34 +47,30 @@ public class Flemington : MonoBehaviour
 
     void Move()
     {
-        if (traveling == false)
+        if (Traveling == false)
             return;
 
-        rb.velocity = (destination - transform.position).normalized * Time.fixedDeltaTime * stats.speed;
-        rb.velocity += new Vector2(0, Mathf.Sin(Time.time));
+        Vector2 targetDir = (Destination - transform.position).normalized;
 
-        if (Vector2.Distance(transform.position, destination) < 0.25f)
+        if (Mathf.Abs(transform.position.x - Destination.x) > 1f)
+            targetDir.y = rb.velocity.y;
+        else
+            targetDir.y *= 3;
+
+        rb.velocity = targetDir * Time.fixedDeltaTime * stats.speed;
+        //rb.velocity += new Vector2(0, Mathf.Sin(Time.time));
+
+        if (Vector2.Distance(transform.position, Destination) < 0.05f)
         {
-            traveling = false;
+            Traveling = false;
             stateMachine.DestinationReached();
         }
     }
 
-    void TryGetTask()
-    {
-        if (task != null)
-            return;
-
-        task = Village.I.GetClosestTask(transform.position);
-
-        if (task != null)
-            SetDestination(task.TargetPosition);
-    }
-
     public void SetDestination(Vector2 pos)
     {
-        destination = pos;
-        traveling = true;
+        Destination = pos;
+        Traveling = true;
     }
 
     void UpdateNeeds()
@@ -85,7 +82,7 @@ public class Flemington : MonoBehaviour
         }
     }
 
-
+    public string GetStateText() => stateMachine.GetStateText();
 }
 
 [System.Serializable]

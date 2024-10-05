@@ -3,18 +3,21 @@ using UnityEngine;
 
 public class BreakJob : Job
 {
-    Hitable ToBreak { get; private set; }
+    readonly Hitable ToBreak;
 
     public BreakJob(Hitable toBreak)
     {
         ToBreak = toBreak;
+        ToBreak.Broken += Completed;
 
         for (int i = 0; i < ToBreak.HitPoints; i++)
-            availableTasks.Add(NewTask);
+            CreateTask(NewTask);
     }
 
-    public override void TaskCompleted()
+    protected override void TaskCompleted(Task task)
     {
+        base.TaskCompleted(task);
+
         if (availableTasks.Count < ToBreak.HitPoints)
             availableTasks.Add(NewTask);
     }

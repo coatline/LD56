@@ -31,43 +31,59 @@ public class Village : Singleton<Village>
 
     public Chunk CreateChunkAt(Vector3 pos)
     {
-        Chunk newChunk = Instantiate(chunkPrefab, transform.position, Quaternion.identity);
-        jobs.Add(new BreakJob(newChunk));
+        Chunk newChunk = Instantiate(chunkPrefab, pos, Quaternion.identity);
+        CreateNewJob(new BreakJob(newChunk));
         chunks.Add(newChunk);
         return newChunk;
     }
 
     public Item CreateItemAt(Vector3 pos)
     {
-        Item newItem = Instantiate(itemPrefab, transform.position, Quaternion.identity);
+        Item newItem = Instantiate(itemPrefab, pos, Quaternion.identity);
         items.Add(newItem);
         return newItem;
     }
 
-    public void AddTask(Task task)
+    public void CreateNewJob(Job job)
     {
-        tasks.Add(task);
+        job.OnCompleted += JobCompleted;
+        jobs.Add(job);
+    }
+
+    void JobCompleted(Job job)
+    {
+        jobs.Remove(job);
     }
 
     public Task GetClosestTask(Vector3 myPos)
     {
-        Task closest = null;
+        Task closestTask = null;
+        Job closestJob = null;
         float closestDist = Mathf.Infinity;
 
         for (int i = 0; i < jobs.Count; i++)
         {
             Job job = jobs[i];
-            Task task = job.GetClosestTask(myPos);
+            Task task = job.GetAvailableTask();
+            //Task task = job.GetClosestTask(myPos);
+
+            // All of this job's tasks have been taken
+            if (task == null)
+                continue;
+
             // This can be optimized.
             float dist = Vector2.Distance(myPos, task.TargetPosition);
 
             if (dist < closestDist)
             {
-                closest = task;
+                closestTask = task;
+                closestJob = job;
                 closestDist = dist;
             }
         }
 
-        return closest;
+        if (closestJob != null)
+            closestJob.TakeTask(closestTask);
+        return closestTask;
     }
 }

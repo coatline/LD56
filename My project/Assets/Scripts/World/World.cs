@@ -1,6 +1,6 @@
 using UnityEngine.Tilemaps;
 
-public class World :Mono
+public class World
 {
 
 }

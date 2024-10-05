@@ -11,8 +11,9 @@ public abstract class State
         this.flemington = flemington;
     }
 
-    protected abstract void Being();
+    public virtual void Enter() { }
     public abstract void Update(float deltaTime);
-    public abstract void DestinationReached();
-    protected abstract void Quit();
+    public virtual void DestinationReached() { }
+    public virtual void Exit() { }
+    public abstract string GetInspectText();
 }

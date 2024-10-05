@@ -9,7 +9,7 @@ public static class C
 
     public static GameObject GobUnderMouse(Vector2 mousePos)
     {
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, new Vector3(0,0,1));
+        RaycastHit2D hit = Physics2D.Raycast(mousePos, new Vector3(0, 0, 1));
 
         if (hit)
             return hit.collider.gameObject;
@@ -142,10 +142,7 @@ public static class C
         return null;
     }
 
-    public static Vector3 MultiplyVector3s(Vector3 v1, Vector3 v2)
-    {
-        return new Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
-    }
+    public static Vector3 MultiplyVector2s(Vector2 v1, Vector2 v2) => new Vector3(v1.x * v2.x, v1.y * v2.y);
 
     enum CompassDir
     {
@@ -154,4 +151,24 @@ public static class C
         W = 4, SW = 5,
         S = 6, SE = 7
     };
+
+    public static string GetRandomName()
+    {
+        return names[Random.Range(0, names.Length)];
+    }
+
+    static string[] names = new string[10]
+    {
+        "John",
+        "Flavius",
+        "Jim",
+        "Tim",
+        "Josh",
+        "Kimberly",
+        "Devin",
+        "Ronald",
+        "George",
+        "Donald",
+    };
+
 }

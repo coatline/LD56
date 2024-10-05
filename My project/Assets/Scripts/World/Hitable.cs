@@ -32,12 +32,12 @@ public class Hitable : MonoBehaviour
 
         while (timer < shakeTime)
         {
-            sr.transform.position = new Vector3(Mathf.Sin(timer), Mathf.Cos(timer)) * shakeCurve.Evaluate(timer / shakeTime);
+            sr.transform.localPosition = new Vector3(Mathf.Sin(timer), Mathf.Cos(timer)) * shakeCurve.Evaluate(timer / shakeTime);
             timer += Time.deltaTime;
             yield return null;
         }
 
-        sr.transform.position = Vector3.zero;
+        sr.transform.localPosition = Vector3.zero;
     }
 
     public int HitPoints => hp;

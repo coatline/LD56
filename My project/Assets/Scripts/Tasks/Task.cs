@@ -2,25 +2,33 @@ using UnityEngine;
 
 public abstract class Task
 {
-    public event System.Action OnCompleted;
+    public event System.Action<Task> OnCompleted;
+
+    //public float X { get; protected set; }
+    //public float Y { get; protected set; }
 
     public readonly Job ParentJob;
+    protected readonly int ID;
 
     public Task(Job parentJob)
     {
         ParentJob = parentJob;
-        ParentJob.Completed += OnCompleted;
+        ParentJob.OnCompleted += ParentJobCompleted;
+        ID = GetHashCode();
     }
 
     protected virtual void Completed()
     {
-        ParentJob.Completed -= OnCompleted;
-        ParentJob.TaskCompleted();
-        OnCompleted?.Invoke();
+        ParentJob.OnCompleted -= ParentJobCompleted;
+        OnCompleted?.Invoke(this);
     }
 
-    public abstract void WorkOn();
+    void ParentJobCompleted(Job job) => Completed();
+
+    public abstract void WorkOn(Flemington flemington, float deltaTime);
     public abstract Vector2 TargetPosition { get; }
+
+    public virtual string GetTextString() => $"Task: {GetType().Name}\nTask ID: {ID}\n";
 }
 
 public enum TaskType

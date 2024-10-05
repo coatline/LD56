@@ -4,20 +4,40 @@ using UnityEngine;
 
 public class HitTask : Task
 {
-    public Hitable ToHit { get; private set; }
+    readonly Hitable toHit;
+    float hitTimer;
 
     public HitTask(Job parentJob, Hitable toHit) : base(parentJob)
     {
-        ToHit = toHit;
-        ToHit.Broken += Completed;
+        this.toHit = toHit;
+        this.toHit.Broken += Completed;
     }
 
-    public override void WorkOn()
+    public override void WorkOn(Flemington flemington, float deltaTime)
     {
-        ToHit.Broken -= Completed;
-        ToHit.Hit();
+        hitTimer += deltaTime;
+
+        if (hitTimer > 1)
+            Complete();
+    }
+
+    void Complete()
+    {
+        toHit.Hit();
         Completed();
     }
 
-    public override Vector2 TargetPosition => ToHit.transform.position;
+    protected override void Completed()
+    {
+        toHit.Broken -= Completed;
+        base.Completed();
+    }
+
+    public override string GetTextString()
+    {
+        string str = $"Hitting: {toHit.name} ({toHit.HitPoints}hp)";
+        return base.GetTextString() + str;
+    }
+
+    public override Vector2 TargetPosition => toHit.transform.position;
 }

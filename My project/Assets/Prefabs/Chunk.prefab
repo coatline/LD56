@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4206513715389558863}
   - component: {fileID: 1811112206722879327}
   - component: {fileID: 680493850953653257}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Chunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,6 +73,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   sr: {fileID: 3690522291553416955}
   shakeTime: 0.5
+  hp: 6
 --- !u!61 &1811112206722879327
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -116,7 +117,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.44149467, y: 0.31723002}
+  m_Size: {x: 0.45712492, y: 0.31890893}
   m_EdgeRadius: 0
 --- !u!50 &680493850953653257
 Rigidbody2D:
@@ -155,7 +156,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7579157502600223840}
   - component: {fileID: 3690522291553416955}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,7 +218,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -2
   m_Sprite: {fileID: 413314269, guid: 63b73457824771b46a39ff8debc479cd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
