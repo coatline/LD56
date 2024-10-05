@@ -41,11 +41,8 @@ public class CameraFollowWithBarriers : MonoBehaviour
 
         float scrollInput = Input.GetAxis("Mouse ScrollWheel");
 
-        if (scrollInput != 0f)
-        {
-            targetZoom -= scrollInput * zoomSpeed;
-            targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);  // Clamping the zoom level
-        }
+        targetZoom -= scrollInput * zoomSpeed;
+        targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);  // Clamping the zoom level
 
         cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, targetZoom, ref zoomVelocity, zoomSmoothTime);
 
@@ -71,6 +68,6 @@ public class CameraFollowWithBarriers : MonoBehaviour
     public void SetFollow(Transform follow)
     {
         followObject = follow;
-        targetZoom = Mathf.Clamp(targetZoom + focusZoomInAmount, minZoom, maxZoom);  // Clamping the zoom level
+        targetZoom = Mathf.Clamp(targetZoom - focusZoomInAmount, minZoom, maxZoom);  // Clamping the zoom level
     }
 }

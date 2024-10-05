@@ -1,34 +1,91 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Flemington : MonoBehaviour
 {
     [SerializeField] Stats minStats;
     [SerializeField] Stats maxStats;
+    [SerializeField] Rigidbody2D rb;
 
+    Vector3 destination;
+    bool traveling;
+
+    Dictionary<Need, float> needToValue;
+    StateMachine stateMachine;
+    Flemington toTalkTo;
+    List<Need> needs;
     Stats stats;
-    Needs needs;
     Task task;
 
     void Awake()
     {
         stats = new Stats(minStats, maxStats);
-        needs = new Needs();
+        needToValue = new Dictionary<Need, float>();
+        needs = new List<Need>(DataLibrary.I.Needs.UnsortedArray.ToList());
+        stateMachine = new StateMachine(this);
+
+        for (int i = 0; i < needs.Count; i++)
+        {
+            Need need = needs[i];
+            needToValue.Add(need, 1);
+        }
     }
 
     void Update()
     {
-        needs.Update(Time.deltaTime);
+        UpdateNeeds();
+        stateMachine.Update(Time.deltaTime);
+    }
 
-        if (task == null)
-            task = Village.I.GetClosestTask(transform.position);
+    private void FixedUpdate()
+    {
+        Move();
+    }
 
-        if (task != null)
+    void Move()
+    {
+        if (traveling == false)
+            return;
+
+        rb.velocity = (destination - transform.position).normalized * Time.fixedDeltaTime * stats.speed;
+        rb.velocity += new Vector2(0, Mathf.Sin(Time.time));
+
+        if (Vector2.Distance(transform.position, destination) < 0.25f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, task.pos, Time.deltaTime * stats.speed);
+            traveling = false;
+            stateMachine.DestinationReached();
         }
     }
+
+    void TryGetTask()
+    {
+        if (task != null)
+            return;
+
+        task = Village.I.GetClosestTask(transform.position);
+
+        if (task != null)
+            SetDestination(task.TargetPosition);
+    }
+
+    public void SetDestination(Vector2 pos)
+    {
+        destination = pos;
+        traveling = true;
+    }
+
+    void UpdateNeeds()
+    {
+        for (int i = 0; i < needs.Count; i++)
+        {
+            Need need = needs[i];
+            needToValue[need] -= Time.deltaTime / need.TimeToZero;
+        }
+    }
+
+
 }
 
 [System.Serializable]
@@ -48,25 +105,5 @@ public class Stats
     {
         this.speed = Random.Range(minStats.speed, maxStats.speed);
         this.carryingCapacity = Random.Range(minStats.carryingCapacity, maxStats.carryingCapacity);
-    }
-}
-
-public class Needs
-{
-    public float sleep;
-    public float food;
-    public float drink;
-    public float talk;
-    public float play;
-    public float work;
-
-    public void Update(float dt)
-    {
-        play -= dt;
-        food -= dt;
-        drink -= dt;
-        talk -= dt;
-        play -= dt;
-        work -= dt;
     }
 }

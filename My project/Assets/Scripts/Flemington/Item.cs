@@ -8,7 +8,7 @@ public class Item : MonoBehaviour, ITaskable
 
     void Start()
     {
-        Village.I.AddTask(new Task(transform.position, this));
+        //Village.I.AddTask(new Task(transform.position, this));
     }
 
     public void Work(Flemington flemington)

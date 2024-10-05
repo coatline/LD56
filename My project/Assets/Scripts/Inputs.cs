@@ -14,7 +14,7 @@ public class Inputs : MonoBehaviour
             GameObject gob = C.GobUnderMouse(C.MouseWorldPosition(cam));
             if (gob != null)
             {
-                Breakable b = gob.GetComponent<Breakable>();
+                Hitable b = gob.GetComponent<Hitable>();
                 Flemington flem = gob.GetComponent<Flemington>();
                 print($"{gob.name} {b}");
 

@@ -6,11 +6,13 @@ using UnityEngine;
 public class DataLibrary : Singleton<DataLibrary>
 {
     public Getter<SoundType> Sounds { get; private set; }
+    public Getter<Need> Needs { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
         Sounds = new Getter<SoundType>(Resources.LoadAll<SoundType>("Sounds"));
+        Needs = new Getter<Need>(Resources.LoadAll<Need>("Needs"));
     }
 }
 

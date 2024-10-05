@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chunk : Breakable
+public class Chunk : Hitable
 {
 
     public override void Hit()
