@@ -7,44 +7,47 @@ public class CameraFollowWithBarriers : MonoBehaviour
 {
     [SerializeField] Camera cam;
     [SerializeField] bool offsetBarrierPositionsToFitCameraSize;
-    [SerializeField] float manualMovementSpeed;
     [SerializeField] bool useCoords;
     [SerializeField] Vector2 bottomLeftBarrierCoords;
     [SerializeField] Vector2 topRightBarrierCoords;
-
     [SerializeField] Transform followObject;
+    [SerializeField] bool doBarriers;
 
-    [SerializeField] bool doBarriers = true;
-
-    [Range(.01f, 1f)]
-    [SerializeField] float speed;
-    [SerializeField] float zoomSmoothTime;
-    [SerializeField] float zoomSpeed;
-    [SerializeField] float minZoom;
-    [SerializeField] float maxZoom;
+    [SerializeField] float speedVsZoomMultiplier;
     [SerializeField] float focusZoomInAmount;
-    float zoomVelocity;
+    [SerializeField] float initialSpeed;
+    [SerializeField] float zoomLerpSpeed;
+    [SerializeField] Vector2 zoomLimit;
+    [SerializeField] float zoomSpeed;
+
     float targetZoom;
+    float speed;
+
+    private void Start()
+    {
+        targetZoom = cam.orthographicSize;
+    }
 
     void FixedUpdate()
     {
         Vector3 movement = Vector3.zero;
-        movement = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * Time.deltaTime * manualMovementSpeed;
+
+        movement = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * Time.unscaledDeltaTime;
 
         if (followObject != null)
         {
             if (movement.magnitude > 0)
                 followObject = null;
             else
-                movement = new Vector3(followObject.position.x - transform.position.x, followObject.position.y - transform.position.y);
+                movement = new Vector3(followObject.position.x - transform.position.x, followObject.position.y - transform.position.y) * Time.unscaledDeltaTime;
         }
 
-        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.unscaledDeltaTime;
 
-        targetZoom -= scrollInput * zoomSpeed;
-        targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);  // Clamping the zoom level
+        //targetZoom -= scrollInput * zoomSpeed * Time.unscaledDeltaTime;
+        targetZoom = Mathf.Clamp(targetZoom - scrollInput, zoomLimit.x, zoomLimit.y);
 
-        cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, targetZoom, ref zoomVelocity, zoomSmoothTime);
+        cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetZoom, Time.unscaledDeltaTime * zoomLerpSpeed);
 
         Vector3 blbc = bottomLeftBarrierCoords;
         Vector3 trbc = topRightBarrierCoords;
@@ -57,9 +60,15 @@ public class CameraFollowWithBarriers : MonoBehaviour
                 trbc -= camSize;
             }
 
+        speed = Mathf.Lerp(initialSpeed, initialSpeed * speedVsZoomMultiplier, cam.orthographicSize / zoomLimit.y);
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            speed *= 2;
+
         Vector3 newPos = (transform.position + (movement * speed));
 
-        if (doBarriers) { newPos = new Vector3(Mathf.Clamp(newPos.x, blbc.x, trbc.x), Mathf.Clamp(newPos.y, blbc.y, trbc.y), -10); }
+        if (doBarriers) 
+            newPos = new Vector3(Mathf.Clamp(newPos.x, blbc.x, trbc.x), Mathf.Clamp(newPos.y, blbc.y, trbc.y), -10);
 
         transform.position = newPos;
         transform.position = new Vector3(transform.position.x, transform.position.y, -10);
@@ -68,6 +77,6 @@ public class CameraFollowWithBarriers : MonoBehaviour
     public void SetFollow(Transform follow)
     {
         followObject = follow;
-        targetZoom = Mathf.Clamp(targetZoom - focusZoomInAmount, minZoom, maxZoom);  // Clamping the zoom level
+        targetZoom = Mathf.Clamp(targetZoom - focusZoomInAmount, zoomLimit.x, zoomLimit.y);
     }
 }

@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class GrabTask : Task
 {
-    readonly Item toGrab;
+    public readonly Item ToGrab;
     float pickupTimer;
 
     public GrabTask(Job parentJob, Item toGrab) : base(parentJob)
     {
-        this.toGrab = toGrab;
-        // TODO: reserve item
+        this.ToGrab = toGrab;
+        toGrab.Reserved = true;
     }
 
     public override void WorkOn(Flemington flemington, float deltaTime)
@@ -18,14 +18,23 @@ public class GrabTask : Task
         pickupTimer += deltaTime;
 
         if (pickupTimer > 0.5f)
+        {
+            flemington.PickupItem(ToGrab);
             Completed();
+        }
+    }
+
+    public override void Cancel()
+    {
+        ToGrab.Reserved = false;
+        base.Cancel();
     }
 
     public override string GetTextString()
     {
-        string str = $"Grabbing: {toGrab.name}";
+        string str = $"Grabbing: {ToGrab.name}";
         return base.GetTextString() + str;
     }
 
-    public override Vector2 TargetPosition => toGrab.transform.position;
+    public override Vector2 GetTargetPosition() => ToGrab.transform.position;
 }

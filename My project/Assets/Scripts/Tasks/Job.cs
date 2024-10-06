@@ -4,6 +4,8 @@ using UnityEngine;
 public abstract class Job
 {
     public event System.Action<Job> OnCompleted;
+    public event System.Action<Job> NewAvailableTask;
+
     protected readonly List<Task> availableTasks;
 
     public bool Done { get; private set; }
@@ -18,7 +20,7 @@ public abstract class Job
         OnCompleted.Invoke(this);
     }
 
-    public Task GetAvailableTask()
+    public Task PeekAvailableTask()
     {
         if (availableTasks.Count == 0)
             return null;
@@ -35,7 +37,7 @@ public abstract class Job
 
         for (int i = 0; i < availableTasks.Count; i++)
         {
-            float dist = Vector2.Distance(availableTasks[i].TargetPosition, myPos);
+            float dist = Vector2.Distance(availableTasks[i].GetTargetPosition(), myPos);
 
             if (dist < closestDist)
             {
@@ -50,16 +52,21 @@ public abstract class Job
     public void ReturnTask(Task task)
     {
         availableTasks.Add(task);
+        NewAvailableTask?.Invoke(this);
     }
 
     protected virtual void CreateTask(Task task)
     {
         availableTasks.Add(task);
         task.OnCompleted += TaskCompleted;
+        NewAvailableTask?.Invoke(this);
     }
 
     protected virtual void TaskCompleted(Task task)
     {
+        task.OnCompleted -= TaskCompleted;
         availableTasks.Remove(task);
     }
+
+    public IEnumerable<Task> GetAvailableTasks => availableTasks;
 }

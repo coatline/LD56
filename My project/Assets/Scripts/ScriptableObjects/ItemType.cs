@@ -6,6 +6,8 @@ using UnityEngine;
 public class ItemType : ScriptableObject
 {
     [SerializeField] float value;
+    [SerializeField] Sprite sprite;
 
+    public Sprite Sprite => sprite;
     public float Value => value;
 }

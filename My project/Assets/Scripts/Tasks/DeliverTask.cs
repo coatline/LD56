@@ -7,14 +7,17 @@ public class DeliverTask : Task
     readonly ItemType toDeliver;
     readonly ItemHolder destination;
 
-    public DeliverTask(Job parentJob, ItemType typeToPickup, ItemHolder itemHolder) : base(parentJob)
+    public DeliverTask(Job parentJob, ItemType toDeliver, ItemHolder itemHolder) : base(parentJob)
     {
-        this.toDeliver = typeToPickup;
-        // TODO: reserve item
+        this.toDeliver = toDeliver;
+        this.destination = itemHolder;
+        NeededItems = new List<ItemType> { toDeliver };
     }
 
     public override void WorkOn(Flemington flemington, float deltaTime)
     {
+        flemington.StoreItem(destination);
+        Completed();
     }
 
     public override string GetTextString()
@@ -23,11 +26,5 @@ public class DeliverTask : Task
         return base.GetTextString() + str;
     }
 
-    public override Vector2 TargetPosition
-    {
-        get
-        {
-            return destination.transform.position;
-        }
-    }
+    public override Vector2 GetTargetPosition() => destination.transform.position;
 }

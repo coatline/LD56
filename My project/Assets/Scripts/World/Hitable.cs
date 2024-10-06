@@ -7,11 +7,18 @@ public class Hitable : MonoBehaviour
     public event System.Action Broken;
 
     [SerializeField] AnimationCurve shakeCurve;
+    [SerializeField] protected int startingHP;
     [SerializeField] SpriteRenderer sr;
+    [SerializeField] float shakeSpeed;
     [SerializeField] float shakeTime;
-    [SerializeField] int hp;
+
+    private void Awake()
+    {
+        hp = startingHP;
+    }
 
     float timer;
+    int hp;
 
     public virtual void Hit()
     {
@@ -20,10 +27,13 @@ public class Hitable : MonoBehaviour
         hp--;
 
         if (hp <= 0)
-        {
-            Broken?.Invoke();
-            Destroy(gameObject);
-        }
+            Break();
+    }
+
+    protected virtual void Break()
+    {
+        Broken?.Invoke();
+        Destroy(gameObject);
     }
 
     IEnumerator ShakeAnimation()
@@ -33,7 +43,7 @@ public class Hitable : MonoBehaviour
         while (timer < shakeTime)
         {
             sr.transform.localPosition = new Vector3(Mathf.Sin(timer), Mathf.Cos(timer)) * shakeCurve.Evaluate(timer / shakeTime);
-            timer += Time.deltaTime;
+            timer += Time.deltaTime * shakeSpeed;
             yield return null;
         }
 

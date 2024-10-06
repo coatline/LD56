@@ -39,5 +39,5 @@ public class HitTask : Task
         return base.GetTextString() + str;
     }
 
-    public override Vector2 TargetPosition => toHit.transform.position;
+    public override Vector2 GetTargetPosition() => toHit.transform.position;
 }

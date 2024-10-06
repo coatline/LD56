@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChunkGenerator : MonoBehaviour
+public class WormGenerator : MonoBehaviour
 {
     [SerializeField] float itemSpawnInterval;
+    [SerializeField] float initialTimerValue;
     float timer;
 
-    void Start()
+    private void Awake()
     {
-
+        timer = initialTimerValue;
     }
-
 
     void Update()
     {
@@ -19,7 +19,7 @@ public class ChunkGenerator : MonoBehaviour
 
         if (timer >= itemSpawnInterval)
         {
-            Village.I.CreateChunkAt(transform.position);
+            Worm worm = Village.I.CreateWormAt(transform.position);
             timer = 0;
         }
     }

@@ -178,8 +178,8 @@ TextureImporter:
         serializedVersion: 2
         x: 2
         y: 42
-        width: 7
-        height: 5
+        width: 5
+        height: 3
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -202,7 +202,7 @@ TextureImporter:
         width: 6
         height: 22
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -210,6 +210,153 @@ TextureImporter:
       bones: []
       spriteID: db1835eae66acd342a725c08d3e254cc
       internalID: 844116136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Storage
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 40
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 333784f117264324d96b13698b3d900e
+      internalID: -179684817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WormPart
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 53
+        width: 1
+        height: 1
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4793842c329217f43b8a982637af12e2
+      internalID: 2129688955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sign
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 15
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a87c64ab2755c747bc0e89b52ecbd55
+      internalID: 1619862228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpeechBubble
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 47
+        width: 7
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8f82587cdf85ec47a7262905b3c2075
+      internalID: -381198229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sleep Bubble
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 46
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb1c709d9da71e44b8cf1e21d303b65c
+      internalID: -225308696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Food
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 53
+        width: 1
+        height: 1
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61233579d6caa3644861345e45059cfc
+      internalID: 1466551139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Farm
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 24
+        width: 13
+        height: 3
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db013cb990cd65344b4e86b2f92e24b9
+      internalID: -1851772277
       vertices: []
       indices: 
       edges: []
@@ -227,10 +374,18 @@ TextureImporter:
     nameFileIdTable:
       Dirt Particle: 413314269
       Dirt Pile: 1042254286
+      Farm: -1851772277
       Flemington: -1928644229
       Flimenton: -672213121
+      Food: 1466551139
       Ground: -633394264
+      Sign: 1619862228
+      Sleep Bubble: -225308696
+      SpeechBubble: -381198229
+      Storage: -179684817
       Worm: 844116136
+      Worm Ring: -1788491326
+      WormPart: 2129688955
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

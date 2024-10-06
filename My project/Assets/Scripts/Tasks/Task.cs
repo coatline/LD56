@@ -1,34 +1,48 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Task
 {
     public event System.Action<Task> OnCompleted;
 
-    //public float X { get; protected set; }
-    //public float Y { get; protected set; }
+    public List<ItemType> NeededItems { get; protected set; }
+    public bool IsComplete { get; protected set; }
 
-    public readonly Job ParentJob;
+    public readonly Job RootJob;
     protected readonly int ID;
 
-    public Task(Job parentJob)
+    public Task(Job rootJob)
     {
-        ParentJob = parentJob;
-        ParentJob.OnCompleted += ParentJobCompleted;
+        if (rootJob != null)
+        {
+            RootJob = rootJob;
+            RootJob.OnCompleted += ParentJobCompleted;
+        }
+
         ID = GetHashCode();
+    }
+
+    public void RemakeAvailable()
+    {
+        RootJob.ReturnTask(this);
     }
 
     protected virtual void Completed()
     {
-        ParentJob.OnCompleted -= ParentJobCompleted;
+        if (RootJob != null)
+            RootJob.OnCompleted -= ParentJobCompleted;
+
+        IsComplete = true;
         OnCompleted?.Invoke(this);
     }
 
     void ParentJobCompleted(Job job) => Completed();
 
     public abstract void WorkOn(Flemington flemington, float deltaTime);
-    public abstract Vector2 TargetPosition { get; }
+    public abstract Vector2 GetTargetPosition();
+    public virtual void Cancel() { }
 
-    public virtual string GetTextString() => $"Task: {GetType().Name}\nTask ID: {ID}\n";
+    public virtual string GetTextString() => $"{GetType().Name}\n";
 }
 
 public enum TaskType

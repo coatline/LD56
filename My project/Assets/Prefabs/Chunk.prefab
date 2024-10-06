@@ -51,14 +51,23 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 6.7295594
-      outSlope: 6.7295594
+      time: -0.016667683
+      value: 0.0000075330026
+      inSlope: -0.3631278
+      outSlope: -0.3631278
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.075
+      outWeight: 0.17573306
+    - serializedVersion: 3
+      time: 0.5033494
+      value: -0.00036044046
+      inSlope: -0.8367852
+      outSlope: -0.8367852
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.15198943
     - serializedVersion: 3
       time: 1
       value: 0
@@ -71,9 +80,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  startingHP: 2
   sr: {fileID: 3690522291553416955}
+  shakeSpeed: 5
   shakeTime: 0.5
-  hp: 6
 --- !u!61 &1811112206722879327
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -117,7 +127,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.45712492, y: 0.31890893}
+  m_Size: {x: 0.31388563, y: 0.18259063}
   m_EdgeRadius: 0
 --- !u!50 &680493850953653257
 Rigidbody2D:

@@ -10,46 +10,144 @@ public class Inspector : MonoBehaviour
 
     [SerializeField] TMP_Text nameText;
     [SerializeField] TMP_Text inspectText;
+    [SerializeField] GameObject tabHolder;
     [SerializeField] Image ui;
 
-    Flemington inspecting;
+    [SerializeField] Transform needBarHolder;
+    [SerializeField] NeedBar needBarPrefab;
+    Dictionary<NeedType, NeedBar> needToBar;
 
-    public void Inspect(Flemington flemington)
+    IInspectable inspecting;
+    Tab currentTab;
+
+    public bool Inspecting => inspecting != null;
+
+    private void Awake()
     {
-        inspecting = flemington;
+        needToBar = new Dictionary<NeedType, NeedBar>();
+
+        for (int i = 0; i < DataLibrary.I.Needs.Length; i++)
+        {
+            NeedBar newNeedBar = Instantiate(needBarPrefab, needBarHolder);
+            Need need = DataLibrary.I.Needs[i];
+            newNeedBar.Setup(need);
+            needToBar.Add(need.Type, newNeedBar);
+        }
+    }
+
+    public void Inspect(IInspectable inspectable)
+    {
+        if (inspecting == inspectable)
+            return;
+
+        if (inspecting != null)
+            inspecting.Destroyed -= InspectingDestroyed;
+
+        inspecting = inspectable;
 
         if (inspecting == null)
-        {
-            //lineRenderer.gameObject.SetActive(false);
             ui.gameObject.SetActive(false);
-        }
         else
         {
-            //lineRenderer.gameObject.SetActive(true);
+            if (inspecting as Flemington)
+            {
+                tabHolder.SetActive(true);
+                SetTab((int)currentTab);
+            }
+            else
+            {
+                lineRenderer.enabled = false;
+                tabHolder.SetActive(false);
+                needBarHolder.gameObject.SetActive(false);
+            }
+
             ui.gameObject.SetActive(true);
-            nameText.text = inspecting.name;
+            nameText.text = inspecting.Name;
+            inspecting.Destroyed += InspectingDestroyed;
         }
     }
 
     private void Update()
     {
-        if (inspecting == null)
+        if (inspecting == null || inspecting.Transform == null)
             return;
 
-        inspectText.text = $"Pos : {inspecting.transform.position.ToString("F1")}\n";
+        inspectText.text = "";
 
-        if (inspecting.Traveling)
+        Flemington flemington = inspecting as Flemington;
+
+        if (flemington)
         {
-            lineRenderer.SetPosition(0, inspecting.transform.position);
-            lineRenderer.SetPosition(1, inspecting.Destination);
-            inspectText.text += $"Dest : {inspecting.Destination.ToString("F1")}\n";
+            if (flemington.Traveling)
+            {
+                lineRenderer.enabled = true;
+                lineRenderer.SetPosition(0, flemington.transform.position);
+                lineRenderer.SetPosition(1, flemington.Destination);
+            }
+            else
+                lineRenderer.enabled = false;
+
+            switch (currentTab)
+            {
+                case Tab.Summary:
+                    inspectText.text += inspecting.Content;
+                    break;
+                case Tab.Needs:
+                    NeedBehavior biggestNeed = flemington.GetBiggestNeed();
+                    inspectText.text += $"Needs : {biggestNeed.Need.name} ({biggestNeed.Severity})";
+
+                    for (int i = 0; i < DataLibrary.I.Needs.Length; i++)
+                    {
+                        Need need = DataLibrary.I.Needs[i];
+                        NeedBar bar = needToBar[need.Type];
+                        bar.UpdateDisplay(flemington.NeedToBehavior[need.Type].Amount);
+                    }
+                    break;
+                case Tab.Social:
+                    break;
+                case Tab.Debug:
+                    inspectText.text = $"Pos : {inspecting.Position}\n";
+                    inspectText.text += inspecting.Content;
+                    break;
+            }
+
+
+
+            //inspectText.text += $"State : {flemington.StateMachine.GetStateText()}\n";
         }
         else
         {
-            lineRenderer.SetPosition(0, Vector3.one * 9999);
-            lineRenderer.SetPosition(1, Vector3.one * 9999);
-        }
+            if (inspecting.Position != "")
+                inspectText.text = $"Pos : {inspecting.Position}\n";
 
-        inspectText.text += $"State : {inspecting.GetStateText()}\n";
+            inspectText.text += inspecting.Content;
+        }
+    }
+
+    void InspectingDestroyed()
+    {
+        // If we didn't just exit playmode
+        if (ui != null)
+            Inspect(null);
+    }
+
+    public void SetTab(int tab)
+    {
+        currentTab = (Tab)tab;
+
+        if (currentTab == Tab.Needs)
+        {
+            needBarHolder.gameObject.SetActive(true);
+        }
+        else
+            needBarHolder.gameObject.SetActive(false);
+    }
+
+    enum Tab
+    {
+        Summary,
+        Needs,
+        Social,
+        Debug
     }
 }

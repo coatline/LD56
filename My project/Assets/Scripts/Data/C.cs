@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public static class C
 {
+    public static bool MouseIsOverUI() => EventSystem.current.IsPointerOverGameObject();
+
     public static Vector2 GetCameraSizeInUnits(Camera cam) => new Vector2(cam.orthographicSize * cam.aspect, cam.orthographicSize);
 
     public static GameObject GobUnderMouse(Vector2 mousePos)
@@ -75,6 +78,13 @@ public static class C
                             viewportPosition.z >= 0;
 
         return isInViewport;
+    }
+
+    public static G GetRandomValueFromDictionaryWithList<T, G>(Dictionary<T, List<G>> dict, T key)
+    {
+        if (dict.TryGetValue(key, out List<G> list) && list.Count > 0)
+            return list[Random.Range(0, list.Count)];
+        return default(G);
     }
 
     public static int GetValueCountFromDictionaryWithList<T, G>(Dictionary<T, List<G>> dict, T key)

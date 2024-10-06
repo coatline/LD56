@@ -3,11 +3,10 @@ using System.Collections.Generic;
 
 public class IdleState : State
 {
-    float idleStartTime;
     float idleDuration;
     float elapsed;
 
-    public IdleState(StateMachine machine, Flemington flemington) : base(machine, flemington)
+    public IdleState(Flemington flemington) : base(flemington)
     {
         idleDuration = Random.Range(.5f, 4f);
     }
@@ -17,7 +16,10 @@ public class IdleState : State
         if (elapsed > idleDuration)
         {
             float dir = Random.Range(-1f, 1f);
-            flemington.SetDestination(flemington.transform.position + new Vector3(dir * 3, 0));
+            Vector2 destination = flemington.Position + new Vector2(dir, 0);
+
+            flemington.StateMachine.SetState(new MoveState(flemington, () => destination, 0.5f, this, this));
+
             idleDuration = Random.Range(.5f, 4f);
             elapsed = 0;
         }
@@ -25,13 +27,13 @@ public class IdleState : State
             elapsed += deltaTime;
     }
 
-    public override void Enter()
-    {
-        idleStartTime = Time.time;
-    }
+    //public override void Enter()
+    //{
+    //    idleStartTime = Time.time;
+    //}
 
     public override string GetInspectText()
     {
-        return $"Idle for {C.DisplayTimeFromSeconds((int)(Time.time - idleStartTime))}";
+        return $"Idle ({C.DisplayTimeFromSeconds((int)(flemington.StateMachine.idleTime))})";
     }
 }
