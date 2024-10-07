@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be237e3f4e5d97a4ab063a661fab3f8c, type: 3}
   m_Name: Item Delivered
   m_EditorClassIdentifier: 
-  clips: []
+  clips:
+  - {fileID: 8300000, guid: 8aea2d172dc10cf4bbd62ad0946d3b9a, type: 3}

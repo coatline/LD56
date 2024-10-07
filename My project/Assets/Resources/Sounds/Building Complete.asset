@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be237e3f4e5d97a4ab063a661fab3f8c, type: 3}
   m_Name: Building Complete
   m_EditorClassIdentifier: 
-  clips: []
+  clips:
+  - {fileID: 8300000, guid: 79c036715357eeb45ae951d97afbf90e, type: 3}

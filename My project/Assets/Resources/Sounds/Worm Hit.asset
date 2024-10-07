@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be237e3f4e5d97a4ab063a661fab3f8c, type: 3}
   m_Name: Worm Hit
   m_EditorClassIdentifier: 
-  clips: []
+  clips:
+  - {fileID: 8300000, guid: 4f12e91ed91006c458f851aff7ce418b, type: 3}
