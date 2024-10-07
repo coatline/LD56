@@ -16,7 +16,7 @@ public class DirtMine : Building
         while (true)
         {
             Grow();
-            yield return new WaitForSeconds(20f);
+            yield return new WaitForSeconds(10f);
         }
     }
 

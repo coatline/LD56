@@ -1,14 +1,31 @@
+using System.Collections;
 using UnityEngine;
 
 public class Church : Building
 {
-    protected override void OnDestroy()
+    [SerializeField] Flemington flemingtonPrefab;
+
+    protected override void Complete()
     {
-        base.OnDestroy();
-        // Game over
-        Debug.Log("Game over!");
+        base.Complete();
+        StartCoroutine(GrowInterval());
+    }
+
+    IEnumerator GrowInterval()
+    {
+        while (true)
+        {
+            SpawnFlem();
+            yield return new WaitForSeconds(7f);
+        }
+    }
+
+    void SpawnFlem()
+    {
+        Instantiate(flemingtonPrefab, transform.position, Quaternion.identity);
+        //SoundManager.I.PlaySound("Farm Produce", transform.position);
     }
 
     public override string Name => "Church";
-    public override string Content => "Protect at all costs!";
+    public override string Content => base.Content + "\nCreates new Flemingtons\nProtect at all costs!\n";
 }

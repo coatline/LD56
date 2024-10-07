@@ -35,7 +35,7 @@ public class House : Building
         }
     }
 
-    //public override string Content
+    public override string Content => "Where Flemingtons can sleep.";
     //{
     //    get
     //    {

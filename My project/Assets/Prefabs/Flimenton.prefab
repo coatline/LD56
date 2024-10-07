@@ -151,13 +151,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minStats:
-    speed: 35
+    speed: 50
     carryingCapacity: 0.9
   maxStats:
-    speed: 50
+    speed: 65
     carryingCapacity: 1.1
   rb: {fileID: 0}
   doingBubble: {fileID: 5213359325380270318}
+  conversations: []
 --- !u!212 &6070162816317346285
 SpriteRenderer:
   m_ObjectHideFlags: 0
