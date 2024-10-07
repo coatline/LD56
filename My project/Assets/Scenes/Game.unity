@@ -1524,7 +1524,6 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   flemingtonPrefab: {fileID: 5697146020409053839, guid: c787cb9321c23204a941f96c05f785f1, type: 3}
   chunkPrefab: {fileID: 4206513715389558863, guid: 9902dd2f9ba4a6f40b4cdf0c93aef9f3, type: 3}
-  wormPrefab: {fileID: 4206513715389558863, guid: 3542432b580afc54990095319260341d, type: 3}
   itemPrefab: {fileID: 468646428714853985, guid: 82f46ea331be09847ad2817b3dc894ed, type: 3}
 --- !u!1 &699273356
 GameObject:
@@ -2836,7 +2835,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSpawnInterval: 32.63
-  initialTimerValue: 0
+  initialTimerValue: 30
+  wormPrefabs:
+  - {fileID: 4206513715389558863, guid: 2040dca8ffc574e4a9a7849a1ae8ff6d, type: 3}
+  - {fileID: 4206513715389558863, guid: e50460306b1d88548af4e5a8a971d589, type: 3}
+  - {fileID: 4206513715389558863, guid: 3542432b580afc54990095319260341d, type: 3}
 --- !u!4 &1623117264
 Transform:
   m_ObjectHideFlags: 0
@@ -2846,7 +2849,7 @@ Transform:
   m_GameObject: {fileID: 1623117262}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.01, y: 0, z: 0}
+  m_LocalPosition: {x: 1.01, y: -3.23, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

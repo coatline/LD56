@@ -34,9 +34,10 @@ public class StateMachine
     {
         Vector2 destination = currentTask.GetTargetPosition();
 
-        if (flemington.AtPosition(destination, 0.05f) == false)
+        if (flemington.AtPosition(destination, currentTask.MinDistance) == false)
         {
             // Update path visual
+            flemington.Traveling = true;
             flemington.Destination = destination;
             Move(destination);
         }
@@ -44,11 +45,13 @@ public class StateMachine
         {
             // Do work.
             currentTask.DoWork(flemington, Time.deltaTime);
+            flemington.Traveling = false;
         }
     }
 
     void RootTaskCanceled(Task task)
     {
+        rootTask.FixCanceled(flemington);
         SetRootTask(idleTask, idleTask);
     }
 
@@ -97,18 +100,20 @@ public class StateMachine
             currentTask.OnCanceled += CurrentTaskCanceled;
         }
 
-        currentTask.Start();
+        currentTask.Enter(flemington);
     }
 
     void Move(Vector2 destination)
     {
         Vector2 dist = (destination - flemington.Position);
-        Vector2 movement = dist.normalized * Time.fixedDeltaTime * flemington.Stats.speed * 1f;
+        Vector2 movement = dist.normalized * Time.deltaTime * flemington.Stats.speed;
 
-        if (Mathf.Abs(flemington.Position.x - destination.x) < 1f)
-            flemington.SetYVelocity(movement.y);
+        if (Mathf.Abs(flemington.Position.x - destination.x) > 1f)
+            movement.y = 0;
+        flemington.transform.position = Vector3.MoveTowards(flemington.Position, destination, Time.deltaTime );
+        //flemington.SetYVelocity(movement.y);
 
-        flemington.SetXVelocity(movement.x);
+        //flemington.SetXVelocity(movement.x);
     }
 
     void ChooseNextTask()
@@ -123,10 +128,7 @@ public class StateMachine
         if (nextTask == null)
             SetRootTask(idleTask, idleTask);
         else
-        {
-            Debug.Log("Doing next task in root..");
             SetCurrentTask(nextTask);
-        }
 
         // If the next thing we can do on our current Root Task is Idle, find a new task.
         if (currentTask == idleTask)
@@ -135,8 +137,6 @@ public class StateMachine
 
     void ChooseNewRootTask()
     {
-        Debug.Log("Choosing new root..");
-
         //for (int i = 0; i < needTasks.Count; i++)
         //{
         //    Task needTask = needTasks[i];

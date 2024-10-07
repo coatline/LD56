@@ -3,6 +3,7 @@ using UnityEngine;
 
 public abstract class Job
 {
+    public event System.Action<Job> OnCanceled;
     public event System.Action<Job> OnCompleted;
     public event System.Action<Job> NewAvailableTask;
 
@@ -15,9 +16,16 @@ public abstract class Job
         availableTasks = new List<Task>();
     }
 
-    protected virtual void Completed()
+    protected virtual void Complete()
     {
-        OnCompleted.Invoke(this);
+        Debug.Log($"Completed {GetType().Name}");
+        OnCompleted?.Invoke(this);
+    }
+
+    protected virtual void Cancel()
+    {
+        Debug.Log($"Canceled {GetType().Name}");
+        OnCanceled?.Invoke(this);
     }
 
     public Task PeekAvailableTask()

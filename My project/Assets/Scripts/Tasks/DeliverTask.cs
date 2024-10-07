@@ -7,11 +7,11 @@ public class DeliverTask : Task
     readonly ItemType toDeliver;
     readonly ItemHolder destination;
 
-
-    public DeliverTask(ItemType toDeliver, ItemHolder itemHolder) : base()
+    public DeliverTask(ItemType toDeliver, ItemHolder itemHolder, Job rootJob) : base(rootJob)
     {
         this.toDeliver = toDeliver;
         this.destination = itemHolder;
+        itemHolder.ItemHolderDestroyed += DestinationDestroyed;
         NeededItems = new List<ItemType> { toDeliver };
     }
 
@@ -21,12 +21,21 @@ public class DeliverTask : Task
         Complete();
     }
 
-    public override string GetTextString()
+    void DestinationDestroyed(ItemHolder holder) => Cancel();
+
+    public override void FixCanceled(Flemington flemington)
     {
-        string str = $"Delivering: {toDeliver.name}";
-        return base.GetTextString() + str;
+        if (flemington.Carrying != null)
+            flemington.DropItem();
+        base.FixCanceled(flemington);
     }
 
-    public override float MinDistance => 0.05f;
+    public override string GetTextString()
+    {
+        string str = $"Delivering {toDeliver.name} to {destination.name}";
+        return str;
+    }
+
+    public override float MinDistance => 0.3f;
     public override Vector2 GetTargetPosition() => destination.transform.position;
 }

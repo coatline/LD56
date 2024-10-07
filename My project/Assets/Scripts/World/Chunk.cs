@@ -23,7 +23,6 @@ public class Chunk : Hitable, IInspectable
         }
 
         SoundManager.I.PlaySound("Worm Hit", transform.position);
-        SoundManager.I.PlaySound("Worm Hit", transform.position);
         base.Break();
     }
 
@@ -33,8 +32,9 @@ public class Chunk : Hitable, IInspectable
     public string Content => $"{HitPoints}/{startingHP}";
     public event System.Action Destroyed;
 
-    void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
         Destroyed?.Invoke();
     }
 }

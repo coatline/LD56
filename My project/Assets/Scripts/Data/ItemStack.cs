@@ -9,4 +9,10 @@ public class ItemStack
         Item = item;
         Count = count;
     }
+
+    public ItemStack(ItemStack copy)
+    {
+        Item = copy.Item;
+        Count = copy.Count;
+    }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class IdleTask : Task
 {
     readonly Flemington flemington;
+    float idleStartTime;
     Vector2 destination;
     float idleDuration;
     float idleTimer;
@@ -23,6 +24,11 @@ public class IdleTask : Task
             idleTimer += deltaTime;
     }
 
+    public override void Enter(Flemington flemington)
+    {
+        idleStartTime = Time.time;
+    }
+
     void NewPosition()
     {
         float dir = Random.Range(-1f, 1f);
@@ -35,7 +41,7 @@ public class IdleTask : Task
 
     public override string GetTextString()
     {
-        string str = $"Idle ({Time.time - flemington.StateMachine.IdleStartTime})";
+        string str = $"Idle ({C.DisplayTimeFromSeconds((int)(Time.time - idleStartTime))})";
         return base.GetTextString() + str;
     }
 

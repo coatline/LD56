@@ -12,9 +12,18 @@ public abstract class Task
     public bool IsComplete { get; protected set; }
 
     protected readonly int ID;
+    readonly Job rootJob;
 
-    public Task()
+    public Task(Job rootJob = null)
     {
+        this.rootJob = rootJob;
+
+        if (rootJob != null)
+        {
+            this.rootJob.OnCanceled += RootJobComplete;
+            this.rootJob.OnCompleted += RootJobCanceled;
+        }
+
         ID = GetHashCode();
     }
 
@@ -35,7 +44,6 @@ public abstract class Task
     }
 
     public abstract float MinDistance { get; }
-    public virtual void Start() { }
     public abstract void DoWork(Flemington flemington, float deltaTime);
     public virtual Task GetNextTask(Flemington flemington)
     {
@@ -72,8 +80,16 @@ public abstract class Task
         return this;
     }
 
+    public virtual void Enter(Flemington flemington) { }
+    public virtual void Exit(Flemington flemington) { }
+    public virtual void FixCanceled(Flemington flemington)
+    {
+
+    }
 
     public abstract Vector2 GetTargetPosition();
+    void RootJobComplete(Job job) => Cancel();
+    void RootJobCanceled(Job job) => Cancel();
     public virtual void Cancel()
     {
         OnCanceled?.Invoke(this);

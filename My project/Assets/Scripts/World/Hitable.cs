@@ -12,7 +12,7 @@ public class Hitable : MonoBehaviour
     [SerializeField] float shakeSpeed;
     [SerializeField] float shakeTime;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         hp = startingHP;
     }
@@ -32,7 +32,6 @@ public class Hitable : MonoBehaviour
 
     protected virtual void Break()
     {
-        Broken?.Invoke();
         Destroy(gameObject);
     }
 
@@ -48,6 +47,11 @@ public class Hitable : MonoBehaviour
         }
 
         sr.transform.localPosition = Vector3.zero;
+    }
+
+    protected virtual void OnDestroy()
+    {
+        Broken?.Invoke();
     }
 
     public int HitPoints => hp;

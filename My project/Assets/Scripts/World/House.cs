@@ -2,11 +2,24 @@
 
 public class House : Building
 {
-    public Flemington Owner { get; set; }
+    public Flemington Owner { get; private set; }
 
     protected override void Completed()
     {
         base.Completed();
+        Village.I.HouseAvailable(this);
+    }
+
+    public void SetOwner(Flemington owner)
+    {
+        Owner = owner;
+        Owner.Died += OwnerDied;
+    }
+
+    void OwnerDied(Flemington owner)
+    {
+        Owner.Died -= OwnerDied;
+        Owner = null;
         Village.I.HouseAvailable(this);
     }
 

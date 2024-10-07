@@ -194,13 +194,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Worm
+      name: Biggest Worm
       rect:
         serializedVersion: 2
         x: 68
         y: 18
         width: 6
-        height: 22
+        height: 19
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -328,7 +328,7 @@ TextureImporter:
         width: 1
         height: 1
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -349,7 +349,7 @@ TextureImporter:
         width: 13
         height: 3
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -357,6 +357,48 @@ TextureImporter:
       bones: []
       spriteID: db013cb990cd65344b4e86b2f92e24b9
       internalID: -1851772277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Worm
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 18
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 436d9aa80b9c3454fb4abd353e348d98
+      internalID: -636337124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Worm
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 18
+        width: 4
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a84eeca28ba80b14193afb94046660c5
+      internalID: 370196807
       vertices: []
       indices: 
       edges: []
@@ -372,6 +414,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      Biggest Worm: 844116136
       Dirt Particle: 413314269
       Dirt Pile: 1042254286
       Farm: -1851772277
@@ -379,11 +422,12 @@ TextureImporter:
       Flimenton: -672213121
       Food: 1466551139
       Ground: -633394264
+      Medium Worm: -636337124
       Sign: 1619862228
       Sleep Bubble: -225308696
+      Small Worm: 370196807
       SpeechBubble: -381198229
       Storage: -179684817
-      Worm: 844116136
       Worm Ring: -1788491326
       WormPart: 2129688955
   mipmapLimitGroupName: 

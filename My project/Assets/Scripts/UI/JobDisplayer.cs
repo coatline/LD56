@@ -21,6 +21,7 @@ public class JobDisplayer : MonoBehaviour
     {
         jobs.Add(job);
         job.OnCompleted += JobCompleted;
+        job.OnCanceled += JobCompleted;
         job.NewAvailableTask += UpdateUI;
         UpdateUI();
     }
@@ -28,6 +29,7 @@ public class JobDisplayer : MonoBehaviour
     void JobCompleted(Job job)
     {
         job.OnCompleted -= JobCompleted;
+        job.OnCanceled -= JobCompleted;
         job.NewAvailableTask -= UpdateUI;
         jobs.Remove(job);
         UpdateUI();

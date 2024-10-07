@@ -8,23 +8,28 @@ public class Village : Singleton<Village>
 
     [SerializeField] Flemington flemingtonPrefab;
     [SerializeField] Chunk chunkPrefab;
-    [SerializeField] Worm wormPrefab;
     [SerializeField] Item itemPrefab;
 
+    Dictionary<BuildingType, List<Building>> buildingTypeToBuilding;
     Dictionary<ItemType, List<Item>> typeToItem;
     List<Flemington> flemingtons;
-    List<House> availableHouses;
+    List<House> availableHomes;
     List<Chunk> chunks;
     List<Item> items;
     List<Job> jobs;
+
+    BuildingType houseType;
 
     protected override void Awake()
     {
         base.Awake();
 
+        houseType = DataLibrary.I.Buildings["House"];
+
+        buildingTypeToBuilding = new Dictionary<BuildingType, List<Building>>();
         typeToItem = new Dictionary<ItemType, List<Item>>();
         flemingtons = new List<Flemington>();
-        availableHouses = new List<House>();
+        availableHomes = new List<House>();
         chunks = new List<Chunk>();
         items = new List<Item>();
         jobs = new List<Job>();
@@ -67,36 +72,38 @@ public class Village : Singleton<Village>
         return newChunk;
     }
 
-    public Worm CreateWormAt(Vector3 pos)
-    {
-        Worm newWorm = Instantiate(wormPrefab, pos, Quaternion.identity);
-        CreateNewJob(new BreakJob(newWorm));
-        SoundManager.I.PlaySound("Worm Spawn", pos);
-        return newWorm;
-    }
-
     public Building CreateBuildingAt(Vector3 pos, BuildingType type)
     {
         Building newBuilding = Instantiate(type.Prefab, pos, Quaternion.identity);
+        newBuilding.BuildingDestroyed += BuildingDestroyed;
+        C.AddToDictionaryWithList(buildingTypeToBuilding, type, newBuilding);
         return newBuilding;
+    }
+
+    void BuildingDestroyed(Building building)
+    {
+        if (building.Type == houseType)
+            availableHomes.Remove(building as House);
+
+        C.RemoveFromDictionaryWithList(buildingTypeToBuilding, building.Type, building);
     }
 
     public void HouseAvailable(House house)
     {
-        availableHouses.Add(house);
+        availableHomes.Add(house);
     }
 
     public House PeekAvailableHouse()
     {
-        if (availableHouses.Count == 0) return null;
-        return availableHouses[0];
+        if (availableHomes.Count == 0) return null;
+        return availableHomes[0];
     }
 
     public void ClaimHouse(House house, Flemington flemington)
     {
-        house.Owner = flemington;
-        flemington.House = house;
-        availableHouses.Remove(house);
+        house.SetOwner(flemington);
+        flemington.SetHouse(house);
+        availableHomes.Remove(house);
     }
 
     public Item CreateItemAt(Vector3 pos, ItemType type)
@@ -132,13 +139,17 @@ public class Village : Singleton<Village>
 
     public void CreateNewJob(Job job)
     {
-        job.OnCompleted += JobCompleted;
+        job.OnCompleted += RemoveJob;
+        job.OnCanceled += RemoveJob;
         jobs.Add(job);
         JobCreated?.Invoke(job);
     }
 
-    void JobCompleted(Job job)
+    void RemoveJob(Job job)
     {
+        Debug.Log($"Removing Job {job.GetType().Name}!");
+        job.OnCompleted -= RemoveJob;
+        job.OnCanceled -= RemoveJob;
         jobs.Remove(job);
     }
 

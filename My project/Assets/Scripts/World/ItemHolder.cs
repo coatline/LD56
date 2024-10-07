@@ -3,13 +3,15 @@ using UnityEngine;
 
 public class ItemHolder : MonoBehaviour
 {
+    public event System.Action<ItemHolder> ItemHolderDestroyed;
+
     protected Dictionary<ItemType, int> itemToStored;
-    List<Item> items;
+    List<Item> itemToAnimate;
 
     protected virtual void Awake()
     {
         itemToStored = new Dictionary<ItemType, int>();
-        items = new List<Item>();
+        itemToAnimate = new List<Item>();
     }
 
     public virtual void AddItem(Item item)
@@ -18,24 +20,26 @@ public class ItemHolder : MonoBehaviour
             itemToStored[item.Type]++;
         else
             itemToStored.Add(item.Type, 1);
-
-        Village.I.DestroyItem(item);
     }
 
-    public void SendItem(Item item) => items.Add(item);
+    public void SendItem(Item item)
+    {
+        AddItem(item);
+        itemToAnimate.Add(item);
+    }
 
     private void Update()
     {
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < itemToAnimate.Count; i++)
         {
-            Item item = items[i];
+            Item item = itemToAnimate[i];
 
-            item.transform.position = Vector3.Lerp(item.transform.position, transform.position, Time.deltaTime);
+            item.transform.position = Vector3.MoveTowards(item.transform.position, transform.position, Time.deltaTime);
 
-            if (Vector2.Distance(item.transform.position, transform.position) < 0.5f)
+            if (Vector2.Distance(item.transform.position, transform.position) < 0.05f)
             {
-                AddItem(item);
-                items.RemoveAt(i);
+                Village.I.DestroyItem(item);
+                itemToAnimate.RemoveAt(i);
             }
         }
     }
@@ -45,5 +49,10 @@ public class ItemHolder : MonoBehaviour
         if (itemToStored.ContainsKey(type) == false)
             itemToStored.Add(type, 0);
         return itemToStored[type];
+    }
+
+    protected virtual void OnDestroy()
+    {
+        ItemHolderDestroyed?.Invoke(this);
     }
 }

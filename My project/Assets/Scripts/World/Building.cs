@@ -4,26 +4,35 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Building : ItemHolder, IInspectable
+public abstract class Building : ItemHolder, IInspectable
 {
-    [SerializeField] ItemStack buildingMaterials;
+    public event Action<Building> BuildingDestroyed;
+
+    [SerializeField] ItemStack toDeliver;
     [SerializeField] TMP_Text percentText;
     [SerializeField] SpriteRenderer sr;
+    [SerializeField] BuildingType type;
 
+    protected ItemStack required;
     float percentComplete;
     protected bool built;
 
     protected override void Awake()
     {
         base.Awake();
-        Village.I.CreateNewJob(new DeliverJob(buildingMaterials, this));
+        required = new ItemStack(toDeliver);
+        Village.I.CreateNewJob(new DeliverJob(toDeliver, this, 4));
     }
 
     public override void AddItem(Item item)
     {
         base.AddItem(item);
+
         percentComplete = PercentComplete();
         SoundManager.I.PlaySound("Item Delivered", transform.position);
+
+        // FIXME: This only allows for one type of material
+        toDeliver.Count--;
 
         if (percentComplete >= 1)
             Completed();
@@ -36,12 +45,12 @@ public class Building : ItemHolder, IInspectable
     float PercentComplete()
     {
         int required = 0;
-        required = buildingMaterials.Count;
+        required = this.required.Count;
         //for (int i = 0; i < buildingMaterials.Count; i++)
         //{
         //    required += buildingMaterials[i].Count;
         //}
-        return (float)GetStoredAmount(buildingMaterials.Item) / required;
+        return (float)GetStoredAmount(this.required.Item) / required;
     }
 
     protected virtual void Completed()
@@ -51,6 +60,16 @@ public class Building : ItemHolder, IInspectable
         percentText.enabled = false;
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        BuildingDestroyed?.Invoke(this);
+        Destroyed?.Invoke();
+    }
+
+    public BuildingType Type => type;
+
+    public event Action Destroyed;
     public Transform Transform => transform;
     public string Position => "";
     public virtual string Name => name;
@@ -66,12 +85,10 @@ public class Building : ItemHolder, IInspectable
             {
                 str = $"Required Materials : \n";
                 //for (int i = 0; i < buildingMaterials.Count; i++)
-                str += $"{buildingMaterials.Item.name} ({GetStoredAmount(buildingMaterials.Item)}/{buildingMaterials.Count})";
+                str += $"{required.Item.name} ({GetStoredAmount(required.Item)}/{required.Count})";
             }
 
             return str;
         }
     }
-
-    public event Action Destroyed;
 }

@@ -49,11 +49,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41d7d1416ad0f384198d6620b8a0154b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingMaterials:
+  toDeliver:
     Item: {fileID: 11400000, guid: ff92ee27e68f11a40948791b2357bcfd, type: 2}
     Count: 5
   percentText: {fileID: 1248420635546502679}
   sr: {fileID: 5220368927910530025}
+  type: {fileID: 11400000, guid: f848122cabc46a84da5999c666cf88e5, type: 2}
 --- !u!212 &5220368927910530025
 SpriteRenderer:
   m_ObjectHideFlags: 0

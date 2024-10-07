@@ -6,7 +6,10 @@ public class WormGenerator : MonoBehaviour
 {
     [SerializeField] float itemSpawnInterval;
     [SerializeField] float initialTimerValue;
+    [SerializeField] Worm[] wormPrefabs;
+
     float timer;
+    int stage;
 
     private void Awake()
     {
@@ -19,7 +22,8 @@ public class WormGenerator : MonoBehaviour
 
         if (timer >= itemSpawnInterval)
         {
-            Worm worm = Village.I.CreateWormAt(transform.position);
+            SoundManager.I.PlaySound("Worm Spawn", transform.position);
+            Instantiate(wormPrefabs[stage], transform);
             timer = 0;
         }
     }

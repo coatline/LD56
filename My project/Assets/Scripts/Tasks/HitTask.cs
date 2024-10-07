@@ -7,10 +7,10 @@ public class HitTask : Task
     readonly Hitable toHit;
     float hitTimer;
 
-    public HitTask(Hitable toHit) : base()
+    public HitTask(Hitable toHit, Job rootJob) : base(rootJob)
     {
         this.toHit = toHit;
-        this.toHit.Broken += Complete;
+        this.toHit.Broken += Cancel;
     }
 
     public override void DoWork(Flemington flemington, float deltaTime)
@@ -21,17 +21,22 @@ public class HitTask : Task
             Complete();
     }
 
+    public override void Cancel()
+    {
+        toHit.Broken -= Cancel;
+        base.Cancel();
+    }
+
     protected override void Complete()
     {
-        toHit.Broken -= Complete;
         toHit.Hit();
         base.Complete();
     }
 
     public override string GetTextString()
     {
-        string str = $"Hitting: {toHit.name} ({toHit.HitPoints}hp)";
-        return base.GetTextString() + str;
+        string str = $"Hitting {toHit.name} ({toHit.HitPoints}hp)";
+        return str;
     }
 
     public override float MinDistance => 0.2f;

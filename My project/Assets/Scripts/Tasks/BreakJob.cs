@@ -8,7 +8,7 @@ public class BreakJob : Job
     public BreakJob(Hitable toBreak)
     {
         ToBreak = toBreak;
-        ToBreak.Broken += Completed;
+        ToBreak.Broken += Complete;
 
         for (int i = 0; i < ToBreak.HitPoints; i++)
             CreateTask(NewTask);
@@ -22,5 +22,5 @@ public class BreakJob : Job
             availableTasks.Add(NewTask);
     }
 
-    HitTask NewTask => new HitTask(ToBreak);
+    HitTask NewTask => new HitTask(ToBreak, this);
 }

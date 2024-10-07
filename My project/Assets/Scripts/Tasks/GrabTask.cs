@@ -26,6 +26,7 @@ public class GrabTask : Task
 
     public override void Cancel()
     {
+        Debug.Log($"Canceled ");
         ToGrab.Reserved = false;
         base.Cancel();
     }

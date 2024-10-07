@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 827236407489952648}
   - component: {fileID: 680493850953653257}
   m_Layer: 8
-  m_Name: Worm
+  m_Name: Big Worm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,8 +82,12 @@ MonoBehaviour:
     m_RotationOrder: 4
   startingHP: 2
   sr: {fileID: 3690522291553416955}
-  shakeSpeed: 5
+  shakeSpeed: 10
   shakeTime: 0.5
+  itemsPerHit: 2
+  chunksOnDestroy: 3
+  moveSpeed: 15.68
+  moveOutOfGroundAmount: 1
 --- !u!70 &827236407489952648
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

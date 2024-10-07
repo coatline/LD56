@@ -19,7 +19,7 @@ public class Flemington : MonoBehaviour, IInspectable
     public StateMachine StateMachine { get; private set; }
     public Item Carrying { get; private set; }
     public Stats Stats { get; private set; }
-    public House House { get; set; }
+    public House House { get; private set; }
 
     public Vector2 Destination { get; set; }
     public bool Traveling { get; set; }
@@ -94,10 +94,30 @@ public class Flemington : MonoBehaviour, IInspectable
         Carrying.StartCarrying();
     }
 
-    public void StoreItem(ItemHolder itemHolder)
+    public void DropItem()
     {
+        Carrying.Reserved = false;
+        Carrying.StopCarrying();
+        Carrying = null;
+    }
+
+    public virtual void StoreItem(ItemHolder itemHolder)
+    {
+        Debug.Log("Thing");
         itemHolder.SendItem(Carrying);
         Carrying = null;
+    }
+
+    public void SetHouse(House house)
+    {
+        House = house;
+        House.Destroyed += MyHouseDestroyed;
+    }
+
+    void MyHouseDestroyed()
+    {
+        House.Destroyed -= MyHouseDestroyed;
+        House = null;
     }
 
     void Die(string cause)
@@ -106,26 +126,14 @@ public class Flemington : MonoBehaviour, IInspectable
             return;
 
         dead = true;
-        NotificationShower.I.ShowNotification($"{Name} died! Cause: {cause}", 5f);
+        NotificationShower.I.ShowNotification($"<color=red>{Name} died! </color>Cause: {cause}", 5f);
 
         // Put our Task back
         StateMachine.Died();
 
         // Drop what I was carrying
         if (Carrying != null)
-        {
-            Carrying.StopCarrying();
-            Carrying.Reserved = false;
-            Carrying = null;
-        }
-
-        // TODO: remove from the list of flemingtons
-
-        if (House != null)
-        {
-            House.Owner = null;
-            Village.I.HouseAvailable(House);
-        }
+            DropItem();
 
         SoundManager.I.PlaySound("Flemington Die", transform.position);
         Died?.Invoke(this);
@@ -135,8 +143,8 @@ public class Flemington : MonoBehaviour, IInspectable
     public bool AtPosition(Vector2 pos, float minDistance) => Mathf.Abs(Position.x - pos.x) < minDistance /*&& Mathf.Abs(Position.y - pos.y) < minDistance * 2*/;
 
     public Vector2 Position => transform.position;
-    public void SetXVelocity(float xVel) => rb.velocity = new Vector2(xVel, rb.velocity.y);
-    public void SetYVelocity(float yVel) => rb.velocity = new Vector2(rb.velocity.x, yVel);
+    //public void SetXVelocity(float xVel) => rb.velocity = new Vector2(xVel, rb.velocity.y);
+    //public void SetYVelocity(float yVel) => rb.velocity = new Vector2(rb.velocity.x, yVel);
 
     public string Name => name;
 

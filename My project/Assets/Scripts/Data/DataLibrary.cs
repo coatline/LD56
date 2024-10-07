@@ -5,6 +5,7 @@ using UnityEngine;
 [DefaultExecutionOrder(-10)]
 public class DataLibrary : Singleton<DataLibrary>
 {
+    public Getter<BuildingType> Buildings { get; private set; }
     public Getter<SoundType> Sounds { get; private set; }
     public Getter<ItemType> Items { get; private set; }
     public Getter<Need> Needs { get; private set; }
@@ -12,6 +13,7 @@ public class DataLibrary : Singleton<DataLibrary>
     protected override void Awake()
     {
         base.Awake();
+        Buildings = new Getter<BuildingType>(Resources.LoadAll<BuildingType>("Buildings"));
         Sounds = new Getter<SoundType>(Resources.LoadAll<SoundType>("Sounds"));
         Items = new Getter<ItemType>(Resources.LoadAll<ItemType>("Items"));
         Needs = new Getter<Need>(Resources.LoadAll<Need>("Needs"));
