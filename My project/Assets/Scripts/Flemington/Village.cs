@@ -71,11 +71,6 @@ public class Village : Singleton<Village>
         newBuilding.BuildingDestroyed += BuildingDestroyed;
         newBuilding.BuildingCompleted += BuildingCompleted;
 
-        Church church = newBuilding as Church;
-
-        if (church != null)
-            churches.Add(church);
-
         C.AddToDictionaryWithList(buildingTypeToBuilding, newBuilding.Type, newBuilding);
     }
 
@@ -107,14 +102,19 @@ public class Village : Singleton<Village>
         C.RemoveFromDictionaryWithList(buildingTypeToBuilding, destroyed.Type, destroyed);
     }
 
-    void BuildingCompleted(Building building)
+    void BuildingCompleted(Building newBuilding)
     {
-        completedBuildings.Add(building);
+        completedBuildings.Add(newBuilding);
 
-        House house = building as House;
+        House house = newBuilding as House;
 
         if (house)
             HouseAvailable(house);
+
+        Church church = newBuilding as Church;
+
+        if (church != null)
+            churches.Add(church);
     }
 
     public void HouseAvailable(House house)

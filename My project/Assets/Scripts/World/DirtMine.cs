@@ -16,7 +16,7 @@ public class DirtMine : Building
         while (true)
         {
             Grow();
-            yield return new WaitForSeconds(10f);
+            yield return new WaitForSeconds(8f);
         }
     }
 
@@ -24,7 +24,7 @@ public class DirtMine : Building
     {
         //Transform point = spawnPoints[Random.Range(0, spawnPoints.Length)];
         for (int i = 0; i < spawnPoints.Length; i++)
-            Village.I.CreateItemAt(spawnPoints[i].transform.position, DataLibrary.I.Items["Dirt"]);
+            Village.I.CreateItemAt(spawnPoints[i].transform.position + C.GetRandVector(-0.3f, 0.3f), DataLibrary.I.Items["Dirt"]);
 
         //SoundManager.I.PlaySound("Farm Produce", transform.position);
     }

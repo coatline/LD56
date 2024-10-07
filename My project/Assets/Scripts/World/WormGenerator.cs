@@ -15,7 +15,7 @@ public class WormGenerator : MonoBehaviour
 
     private void Awake()
     {
-        timer = NextWave().downTime;
+        timer = waves[0].downTime;
     }
 
     void Update()
@@ -26,10 +26,10 @@ public class WormGenerator : MonoBehaviour
 
         if (timer <= 0)
         {
-            Wave nextWave = NextWave();
+            Wave nextWave = CurrentWave();
             SpawnWave(nextWave);
-            timer = nextWave.downTime;
             wave++;
+            timer = CurrentWave().downTime;
         }
     }
 
@@ -54,7 +54,7 @@ public class WormGenerator : MonoBehaviour
         timer = wave.downTime;
     }
 
-    Wave NextWave() => waves[Mathf.Min(wave, waves.Length - 1)];
+    Wave CurrentWave() => waves[Mathf.Min(wave, waves.Length - 1)];
 
     [System.Serializable]
     public class Wave
