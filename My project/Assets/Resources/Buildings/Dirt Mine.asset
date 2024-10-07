@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0c3299e4ce2e7f4c8e5d59f9842e011, type: 3}
-  m_Name: Food
+  m_Script: {fileID: 11500000, guid: 190f31cd3957aa44aa091e1bf4f44b76, type: 3}
+  m_Name: Dirt Mine
   m_EditorClassIdentifier: 
-  timeToZero: 100
-  barColor: {r: 0.48235297, g: 0.3254902, b: 0.6784314, a: 1}
-  icon: {fileID: 0}
-  type: 0
+  buildingPrefab: {fileID: 4135818868353475300, guid: 6ab7ee920cb989f43a2a5e86c3566002, type: 3}
+  icon: {fileID: -2075718355, guid: 63b73457824771b46a39ff8debc479cd, type: 3}

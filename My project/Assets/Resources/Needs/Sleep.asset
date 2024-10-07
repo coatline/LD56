@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c3299e4ce2e7f4c8e5d59f9842e011, type: 3}
   m_Name: Sleep
   m_EditorClassIdentifier: 
-  timeToZero: 30.4
+  timeToZero: 100
   barColor: {r: 0.48235297, g: 0.3254902, b: 0.6784314, a: 1}
   icon: {fileID: 0}
   type: 1

@@ -36,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.003, y: 0.241}
-  m_SizeDelta: {x: 0.2376, y: 0.285}
+  m_AnchoredPosition: {x: 0.003, y: 0.419}
+  m_SizeDelta: {x: 0.6129, y: 0.2929}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &349475511444911399
 Canvas:
@@ -113,8 +113,8 @@ GameObject:
   - component: {fileID: 5492308310015506605}
   - component: {fileID: 5697146020409053839}
   - component: {fileID: 6070162816317346285}
-  - component: {fileID: 9033388367721033239}
-  - component: {fileID: 2458909893411600469}
+  - component: {fileID: -1335559319112984943}
+  - component: {fileID: 4692825903306026348}
   m_Layer: 6
   m_Name: Flimenton
   m_TagString: Untagged
@@ -156,7 +156,7 @@ MonoBehaviour:
   maxStats:
     speed: 50
     carryingCapacity: 1.1
-  rb: {fileID: 2458909893411600469}
+  rb: {fileID: 0}
   doingBubble: {fileID: 5213359325380270318}
 --- !u!212 &6070162816317346285
 SpriteRenderer:
@@ -210,7 +210,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &9033388367721033239
+--- !u!61 &-1335559319112984943
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -246,16 +246,16 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.125, y: 0.125}
+    oldSize: {x: 0.25, y: 0.25}
     newSize: {x: 0.125, y: 0.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.125, y: 0.125}
+  m_Size: {x: 0.25, y: 0.25}
   m_EdgeRadius: 0
---- !u!50 &2458909893411600469
+--- !u!50 &4692825903306026348
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -263,8 +263,8 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7631721447331822677}
-  m_BodyType: 0
-  m_Simulated: 0
+  m_BodyType: 1
+  m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
@@ -317,7 +317,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0000019520521, y: 0}
+  m_AnchoredPosition: {x: 0.000001937151, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2091712651002655488
@@ -373,4 +373,4 @@ MonoBehaviour:
   bubble: {fileID: 785765733598149621}
   sleepingSprite: {fileID: -381198229, guid: 63b73457824771b46a39ff8debc479cd, type: 3}
   talkingSprite: {fileID: 1619862228, guid: 63b73457824771b46a39ff8debc479cd, type: 3}
-  eatingSprite: {fileID: 844116136, guid: 63b73457824771b46a39ff8debc479cd, type: 3}
+  eatingSprite: {fileID: 370196807, guid: 63b73457824771b46a39ff8debc479cd, type: 3}

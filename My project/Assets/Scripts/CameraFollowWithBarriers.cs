@@ -26,13 +26,14 @@ public class CameraFollowWithBarriers : MonoBehaviour
     private void Start()
     {
         targetZoom = cam.orthographicSize;
+        
     }
 
     void FixedUpdate()
     {
         Vector3 movement = Vector3.zero;
 
-        movement = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * Time.unscaledDeltaTime;
+        movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * Time.unscaledDeltaTime;
 
         if (followObject != null)
         {

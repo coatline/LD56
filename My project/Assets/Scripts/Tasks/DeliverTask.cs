@@ -7,7 +7,7 @@ public class DeliverTask : Task
     readonly ItemType toDeliver;
     readonly ItemHolder destination;
 
-    public DeliverTask(ItemType toDeliver, ItemHolder itemHolder, Job rootJob) : base(rootJob)
+    public DeliverTask(ItemType toDeliver, ItemHolder itemHolder, Job rootJob) : base(rootJob, rootJob == null)
     {
         this.toDeliver = toDeliver;
         this.destination = itemHolder;
@@ -15,7 +15,7 @@ public class DeliverTask : Task
         NeededItems = new List<ItemType> { toDeliver };
     }
 
-    public override void DoWork(Flemington flemington, float deltaTime)
+    public override void DoWork(float deltaTime)
     {
         flemington.StoreItem(destination);
         Complete();
@@ -23,11 +23,19 @@ public class DeliverTask : Task
 
     void DestinationDestroyed(ItemHolder holder) => Cancel();
 
-    public override void FixCanceled(Flemington flemington)
+    public override void Cancel()
     {
-        if (flemington.Carrying != null)
-            flemington.DropItem();
-        base.FixCanceled(flemington);
+        if (flemington != null)
+            if (flemington.Carrying != null)
+                flemington.DropItem();
+
+        base.Cancel();
+    }
+
+    public override void Finish()
+    {
+        destination.ItemHolderDestroyed -= DestinationDestroyed;
+        base.Finish();
     }
 
     public override string GetTextString()

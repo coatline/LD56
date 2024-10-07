@@ -5,24 +5,24 @@ using UnityEngine;
 public class TalkTask : Task
 {
     readonly Flemington toTalkTo;
-    readonly Flemington flemington;
+    string subject;
 
-    public TalkTask(Flemington flemington, Flemington toTalkTo) : base()
+    public TalkTask(Flemington toTalkTo) : base(null, true)
     {
-        this.flemington = flemington;
         this.toTalkTo = toTalkTo;
         this.toTalkTo.Died += TargetDied;
+        subject = C.GetRandomSubject();
     }
 
-    public override void DoWork(Flemington flemington, float deltaTime)
+    public override void DoWork(float deltaTime)
     {
-        if (flemington.NeedToBehavior[NeedType.Social].Amount < 0.99f)
+        flemington.DoingBubble.ShowTalking();
+        flemington.NeedToBehavior[NeedType.Social].ModifyAmount(deltaTime);
+
+        if (flemington.NeedToBehavior[NeedType.Social].Amount >= 1f)
         {
-            flemington.DoingBubble.ShowTalking();
-            flemington.NeedToBehavior[NeedType.Social].ModifyAmount(deltaTime);
-        }
-        else
-        {
+            SoundManager.I.PlaySound("Flemington Talk", flemington.transform.position);
+            flemington.conversations.Add($"Talked to {toTalkTo.name} about {subject}.");
             Complete();
         }
     }
@@ -32,24 +32,23 @@ public class TalkTask : Task
         Cancel();
     }
 
-    public override void Cancel()
+    public override void Start(Flemington flemington)
     {
-        flemington.DoingBubble.StopShowing();
-        toTalkTo.Died -= TargetDied;
-        base.Cancel();
+        base.Start(flemington);
+        flemington.DoingBubble.ShowTalking();
     }
 
-    protected override void Complete()
+    public override void Stop()
     {
         flemington.DoingBubble.StopShowing();
         toTalkTo.Died -= TargetDied;
-        base.Complete();
+        base.Stop();
     }
 
     public override string GetTextString()
     {
         string str = $"Chatting with {toTalkTo.Name}";
-        return base.GetTextString() + str;
+        return str;
     }
 
     public override float MinDistance => 0.5f;

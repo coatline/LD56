@@ -55,7 +55,7 @@ public class JobDisplayer : MonoBehaviour
 
     private void Update()
     {
-        UpdateUI();
+        //UpdateUI();
     }
 
     public bool IsVisible => visualsHolder.gameObject.activeSelf;

@@ -8,29 +8,24 @@ public class StateMachine
     public float IdleStartTime { get; private set; }
     Task idleTask;
 
-    // Ordered in terms of greatest to least needs
-    List<Task> needTasks;
-
     Task currentTask;
     Task rootTask;
 
     public StateMachine(Flemington flemington)
     {
         this.flemington = flemington;
-        idleTask = new IdleTask(flemington);
+        idleTask = new IdleTask();
 
         SetRootTask(idleTask, idleTask);
-
-        needTasks = new List<Task>();
     }
 
     public void Update(float deltaTime)
     {
         ChooseNextTask();
-        Behave();
+        Behave(deltaTime);
     }
 
-    void Behave()
+    void Behave(float deltaTime)
     {
         Vector2 destination = currentTask.GetTargetPosition();
 
@@ -39,32 +34,34 @@ public class StateMachine
             // Update path visual
             flemington.Traveling = true;
             flemington.Destination = destination;
-            Move(destination);
+            Move(destination, deltaTime);
         }
         else
         {
             // Do work.
-            currentTask.DoWork(flemington, Time.deltaTime);
+            currentTask.DoWork(deltaTime);
             flemington.Traveling = false;
         }
     }
 
     void RootTaskCanceled(Task task)
     {
-        rootTask.FixCanceled(flemington);
         SetRootTask(idleTask, idleTask);
     }
 
     void CurrentTaskCanceled(Task task)
     {
-        SetCurrentTask(idleTask);
+        Task nextTask = rootTask.GetNextTask(flemington);
+
+        if (nextTask != null)
+            SetCurrentTask(nextTask);
+        else
+            SetRootTask(idleTask, idleTask);
     }
 
-    // set root before current
     void SetRootTask(Task newRoot, Task newCurrent)
     {
-        // This may be a problem/.....
-        if (newRoot == rootTask)
+        if (newRoot == rootTask || flemington.Dead)
             return;
 
         if (rootTask != null)
@@ -83,11 +80,12 @@ public class StateMachine
 
     void SetCurrentTask(Task newCurrent)
     {
-        if (newCurrent == currentTask)
+        if (newCurrent == currentTask || flemington.Dead)
             return;
 
         if (currentTask != null)
         {
+            currentTask.Stop();
             currentTask.OnCompleted -= CurrentTaskCanceled;
             currentTask.OnCanceled -= CurrentTaskCanceled;
         }
@@ -100,17 +98,17 @@ public class StateMachine
             currentTask.OnCanceled += CurrentTaskCanceled;
         }
 
-        currentTask.Enter(flemington);
+        currentTask.Start(flemington);
     }
 
-    void Move(Vector2 destination)
+    void Move(Vector2 destination, float deltaTime)
     {
         Vector2 dist = (destination - flemington.Position);
-        Vector2 movement = dist.normalized * Time.deltaTime * flemington.Stats.speed;
+        Vector2 movement = dist.normalized * deltaTime * flemington.Stats.speed;
 
         if (Mathf.Abs(flemington.Position.x - destination.x) > 1f)
             movement.y = 0;
-        flemington.transform.position = Vector3.MoveTowards(flemington.Position, destination, Time.deltaTime );
+        flemington.transform.position = Vector3.MoveTowards(flemington.Position, destination, deltaTime);
         //flemington.SetYVelocity(movement.y);
 
         //flemington.SetXVelocity(movement.x);
@@ -137,18 +135,7 @@ public class StateMachine
 
     void ChooseNewRootTask()
     {
-        //for (int i = 0; i < needTasks.Count; i++)
-        //{
-        //    Task needTask = needTasks[i];
-        //    Task nextTask = needTask.GetNextTask(flemington);
-        //    if (nextTask == null)
-        //        continue;
-        //    else
-        //    {
-        //        RootTask = needTask;
-        //        CurrentTask = nextTask;
-        //    }
-        //}
+        TryGetNeedTask();
 
         if (rootTask == idleTask)
             TryGetJobTask();
@@ -184,10 +171,9 @@ public class StateMachine
         while (currentTask == idleTask);
     }
 
-    void AddNeedTasks()
+    void TryGetNeedTask()
     {
         List<Need> checkedNeeds = new List<Need>();
-        needTasks = new List<Task>();
 
         do
         {
@@ -214,8 +200,8 @@ public class StateMachine
 
                         if (flemington.House != null)
                         {
-                            SleepTask sleepTask = new SleepTask(flemington);
-                            needTasks.Add(sleepTask);
+                            SleepTask sleepTask = new SleepTask(flemington.House);
+                            SetRootTask(sleepTask, sleepTask.GetNextTask(flemington));
                             return;
                         }
 
@@ -226,22 +212,18 @@ public class StateMachine
 
                         if (availableToTalk != null)
                         {
-                            TalkTask talkTask = new TalkTask(flemington, availableToTalk);
-                            needTasks.Add(talkTask);
+                            TalkTask talkTask = new TalkTask(availableToTalk);
+                            SetRootTask(talkTask, talkTask.GetNextTask(flemington));
                         }
 
                         break;
                     case NeedType.Food:
-                        //if (flemington.Carrying != null && flemington.Carrying.Name == "Food")
-                        //{
 
-                        //    return new EatState(flemington);
-                        //}
+                        EatTask task = new EatTask();
+                        Task nextTask = task.GetNextTask(flemington);
 
-                        //Item food = Village.I.GetUnreservedItemOfType(DataLibrary.I.Items["Food"]);
-
-                        //if (food != null)
-                        //    return NewTaskState(new GrabTask(food));
+                        if (nextTask != null)
+                            SetRootTask(task, nextTask);
 
                         break;
                 }
@@ -252,13 +234,21 @@ public class StateMachine
 
     public void Died()
     {
+        rootTask.OnCompleted -= RootTaskCanceled;
+        rootTask.OnCanceled -= RootTaskCanceled;
+        currentTask.OnCompleted -= CurrentTaskCanceled;
+        currentTask.OnCanceled -= CurrentTaskCanceled;
+
         rootTask.DoerJustDied();
 
         if (rootTask != currentTask)
-        {
-            currentTask.Cancel();
-            //RootTask.Cancel();
-        }
+            currentTask.DoerJustDied();
+
+        //if (rootTask != currentTask)
+        //{
+        //    currentTask.Cancel();
+        //    RootTask.Cancel();
+        //}
 
         //if (CurrentTask != null)
         //    if (CurrentTask != rootTask)

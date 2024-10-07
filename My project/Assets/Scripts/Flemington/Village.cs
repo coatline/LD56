@@ -6,15 +6,15 @@ public class Village : Singleton<Village>
 {
     public event System.Action<Job> JobCreated;
 
-    [SerializeField] Flemington flemingtonPrefab;
-    [SerializeField] Chunk chunkPrefab;
+    [SerializeField] GameObject gameEndThing;
     [SerializeField] Item itemPrefab;
 
     Dictionary<BuildingType, List<Building>> buildingTypeToBuilding;
     Dictionary<ItemType, List<Item>> typeToItem;
+    List<Building> completedBuildings;
     List<Flemington> flemingtons;
     List<House> availableHomes;
-    List<Chunk> chunks;
+    List<Church> churches;
     List<Item> items;
     List<Job> jobs;
 
@@ -28,19 +28,22 @@ public class Village : Singleton<Village>
 
         buildingTypeToBuilding = new Dictionary<BuildingType, List<Building>>();
         typeToItem = new Dictionary<ItemType, List<Item>>();
+        completedBuildings = new List<Building>();
         flemingtons = new List<Flemington>();
         availableHomes = new List<House>();
-        chunks = new List<Chunk>();
+        churches = new List<Church>();
         items = new List<Item>();
         jobs = new List<Job>();
+
+        Flemington.Created += FlemingtonCreated;
+        Building.BuildingCreated += BuildingCreated;
     }
 
-    public void CreateFlemingtonAt(Vector3 pos)
+    void FlemingtonCreated(Flemington newFleminton)
     {
-        Flemington newFleminton = Instantiate(flemingtonPrefab, pos, Quaternion.identity);
         newFleminton.Died += FlemingtonDied;
         flemingtons.Add(newFleminton);
-        SoundManager.I.PlaySound("Flemington Join", pos);
+        SoundManager.I.PlaySound("Flemington Join", newFleminton.Position);
         NotificationShower.I.ShowNotification($"{newFleminton.name} joined!", 3f);
     }
 
@@ -51,41 +54,67 @@ public class Village : Singleton<Village>
 
     public Flemington GetAvailableFlemington(Flemington notThisOne)
     {
-        if (flemingtons.Count == 0) return null;
+        if (flemingtons.Count <= 1) return null;
 
-        if (flemingtons.Count == 1)
-            return null;
+        Flemington other = flemingtons[Random.Range(0, flemingtons.Count)];
 
-        if (flemingtons[0] == notThisOne)
-            return flemingtons[1];
+        while (other == notThisOne)
+            other = flemingtons[Random.Range(0, flemingtons.Count)];
 
-        return flemingtons[0];
+        return other;
     }
 
-    //public Flemington GetAvailableFlemington
+    public Building CreateBuildingOfType(BuildingType type, Vector2 pos) => Instantiate(type.Prefab, pos, Quaternion.identity);
 
-    public Chunk CreateChunkAt(Vector3 pos)
+    void BuildingCreated(Building newBuilding)
     {
-        Chunk newChunk = Instantiate(chunkPrefab, pos, Quaternion.identity);
-        CreateNewJob(new BreakJob(newChunk));
-        chunks.Add(newChunk);
-        return newChunk;
-    }
-
-    public Building CreateBuildingAt(Vector3 pos, BuildingType type)
-    {
-        Building newBuilding = Instantiate(type.Prefab, pos, Quaternion.identity);
         newBuilding.BuildingDestroyed += BuildingDestroyed;
-        C.AddToDictionaryWithList(buildingTypeToBuilding, type, newBuilding);
-        return newBuilding;
+        newBuilding.BuildingCompleted += BuildingCompleted;
+
+        Church church = newBuilding as Church;
+
+        if (church != null)
+            churches.Add(church);
+
+        C.AddToDictionaryWithList(buildingTypeToBuilding, newBuilding.Type, newBuilding);
     }
 
-    void BuildingDestroyed(Building building)
+    public Building GetRandomBuilding()
     {
-        if (building.Type == houseType)
-            availableHomes.Remove(building as House);
+        if (completedBuildings.Count == 0)
+            return null;
+        return completedBuildings[Random.Range(0, completedBuildings.Count)];
+    }
 
-        C.RemoveFromDictionaryWithList(buildingTypeToBuilding, building.Type, building);
+    void BuildingDestroyed(Building destroyed)
+    {
+        if (destroyed.Type == houseType)
+            availableHomes.Remove(destroyed as House);
+
+        Church church = destroyed as Church;
+        if (church)
+            churches.Remove(church);
+
+        if (churches.Count == 0)
+        {
+            if (TimeManager.I.Paused == false)
+                TimeManager.I.TogglePaused();
+
+            gameEndThing.SetActive(true);
+        }
+
+        completedBuildings.Remove(destroyed);
+        C.RemoveFromDictionaryWithList(buildingTypeToBuilding, destroyed.Type, destroyed);
+    }
+
+    void BuildingCompleted(Building building)
+    {
+        completedBuildings.Add(building);
+
+        House house = building as House;
+
+        if (house)
+            HouseAvailable(house);
     }
 
     public void HouseAvailable(House house)
@@ -147,7 +176,7 @@ public class Village : Singleton<Village>
 
     void RemoveJob(Job job)
     {
-        Debug.Log($"Removing Job {job.GetType().Name}!");
+        //Debug.Log($"Removing Job {job.GetType().Name}!");
         job.OnCompleted -= RemoveJob;
         job.OnCanceled -= RemoveJob;
         jobs.Remove(job);
@@ -184,4 +213,10 @@ public class Village : Singleton<Village>
     //{
     //    task.RootJob.TakeTask(task);
     //}
+
+    private void OnDestroy()
+    {
+        Flemington.Created -= FlemingtonCreated;
+        Building.BuildingCreated -= BuildingCreated;
+    }
 }

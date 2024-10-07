@@ -87,23 +87,35 @@ public class Inspector : MonoBehaviour
             else
                 lineRenderer.enabled = false;
 
+
             switch (currentTab)
             {
                 case Tab.Summary:
                     inspectText.text += inspecting.Content;
+                    DisplayNeeds(flemington);
                     break;
                 case Tab.Needs:
-                    NeedBehavior biggestNeed = flemington.GetBiggestNeed();
-                    inspectText.text += $"Needs : {biggestNeed.Need.name} ({biggestNeed.Severity})";
 
-                    for (int i = 0; i < DataLibrary.I.Needs.Length; i++)
-                    {
-                        Need need = DataLibrary.I.Needs[i];
-                        NeedBar bar = needToBar[need.Type];
-                        bar.UpdateDisplay(flemington.NeedToBehavior[need.Type].Amount);
-                    }
+                    NeedBehavior biggestNeed = flemington.GetBiggestNeed();
+                    inspectText.text += inspecting.Content;
+
+                    if (flemington.House == null)
+                        inspectText.text += $"\nHomeless!";
+
+                    inspectText.text += $"\nNeeds : {biggestNeed.Need.name} ({biggestNeed.Severity})";
+
+
+                    DisplayNeeds(flemington);
+
                     break;
                 case Tab.Social:
+
+                    if (flemington.conversations.Count == 0)
+                        inspectText.text += "Hasn't talked yet.";
+                    else
+                        for (int i = 0; i < flemington.conversations.Count; i++)
+                            inspectText.text += $"{flemington.conversations[i]}\n";
+
                     break;
                 case Tab.Debug:
                     inspectText.text = $"Pos : {inspecting.Position}\n";
@@ -121,6 +133,16 @@ public class Inspector : MonoBehaviour
                 inspectText.text = $"Pos : {inspecting.Position}\n";
 
             inspectText.text += inspecting.Content;
+        }
+    }
+
+    void DisplayNeeds(Flemington flemington)
+    {
+        for (int i = 0; i < DataLibrary.I.Needs.Length; i++)
+        {
+            Need need = DataLibrary.I.Needs[i];
+            NeedBar bar = needToBar[need.Type];
+            bar.UpdateDisplay(flemington.NeedToBehavior[need.Type].Amount);
         }
     }
 

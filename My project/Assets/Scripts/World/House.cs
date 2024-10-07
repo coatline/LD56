@@ -4,12 +4,6 @@ public class House : Building
 {
     public Flemington Owner { get; private set; }
 
-    protected override void Completed()
-    {
-        base.Completed();
-        Village.I.HouseAvailable(this);
-    }
-
     public void SetOwner(Flemington owner)
     {
         Owner = owner;

@@ -5,9 +5,9 @@ public class Farm : Building
 {
     [SerializeField] Transform[] spawnPoints;
 
-    protected override void Completed()
+    protected override void Complete()
     {
-        base.Completed();
+        base.Complete();
         StartCoroutine(GrowInterval());
     }
 
@@ -16,7 +16,7 @@ public class Farm : Building
         while (true)
         {
             Grow();
-            yield return new WaitForSeconds(Random.Range(15, 20f));
+            yield return new WaitForSeconds(35f);
         }
     }
 
@@ -24,9 +24,8 @@ public class Farm : Building
     {
         //Transform point = spawnPoints[Random.Range(0, spawnPoints.Length)];
         for (int i = 0; i < spawnPoints.Length; i++)
-        {
             Village.I.CreateItemAt(spawnPoints[i].transform.position, DataLibrary.I.Items["Food"]);
-        }
+
         SoundManager.I.PlaySound("Farm Produce", transform.position);
     }
 

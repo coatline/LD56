@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class Inputs : MonoBehaviour
 {
@@ -11,17 +13,45 @@ public class Inputs : MonoBehaviour
     [SerializeField] Inspector inspector;
     [SerializeField] Camera cam;
 
+    [SerializeField] Flemington flemingtonPrefab;
+    [SerializeField] Chunk chunkPrefab;
+
     BuildingType toBuild;
+    float lastTimeScale;
 
     void Update()
     {
         Vector2 mouseWorldPosition = C.MouseWorldPosition(cam);
 
+        bool canPlace = true;
+
+        Collider2D[] cols = Physics2D.OverlapBoxAll(mouseWorldPosition, Vector2.one * 0.5f, 0);
+
+        if (cols.Length > 0)
+        {
+            for (int i = 0; i < cols.Length; i++)
+            {
+                if (cols[i].GetComponent<Building>())
+                {
+                    canPlace = false;
+                    break;
+                }
+            }
+        }
+
+        if (canPlace)
+            mouseSprite.color = Color.white;
+        else
+            mouseSprite.color = Color.red;
+
         if (Input.GetMouseButtonDown(0))
         {
             if (toBuild != null)
             {
-                Village.I.CreateBuildingAt(mouseWorldPosition, toBuild);
+                if (canPlace)
+                {
+                    Village.I.CreateBuildingOfType(toBuild, mouseWorldPosition);
+                }
             }
             else
             {
@@ -49,22 +79,33 @@ public class Inputs : MonoBehaviour
                 SetBuildingType(null);
         }
 
+        if (Input.GetKey(KeyCode.L))
+        {
+            GameObject gob = C.GobUnderMouse(mouseWorldPosition);
+
+            if (gob != null && gob.GetComponent<IInspectable>() != null)
+                Destroy(gob);
+        }
+
         if (Input.GetKeyDown(KeyCode.T))
         {
-            Village.I.CreateChunkAt(mouseWorldPosition);
+            Instantiate(chunkPrefab, mouseWorldPosition, Quaternion.identity);
         }
+
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            Village.I.CreateFlemingtonAt(mouseWorldPosition);
+            Instantiate(flemingtonPrefab, mouseWorldPosition, Quaternion.identity);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
-            Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        {
+            TimeManager.I.TogglePaused();
+        }
 
-        int key = C.GetNumberKeyDown(1, 3);
+        int key = C.GetNumberKeyDown(1, 5);
 
         if (key != -1)
-            Time.timeScale = key;
+            TimeManager.I.SetTimeMultiplier(key);
 
         if (Input.GetKeyDown(KeyCode.F1))
             jobDisplayer.SetVisible(!jobDisplayer.IsVisible);
@@ -79,5 +120,15 @@ public class Inputs : MonoBehaviour
 
         mouseSprite.sprite = type == null ? null : type.Icon;
         toBuild = type;
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene("Game");
+    }
+
+    public void Menu()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }

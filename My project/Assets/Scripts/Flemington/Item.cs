@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Item : MonoBehaviour, IInspectable
 {
-    [SerializeField] Rigidbody2D rb;
     [SerializeField] SpriteRenderer sr;
     ItemType type;
 
@@ -13,17 +12,6 @@ public class Item : MonoBehaviour, IInspectable
         this.type = type;
         sr.sprite = type.Sprite;
         name = type.name;
-    }
-
-    public void StartCarrying()
-    {
-        rb.velocity = Vector2.zero;
-        rb.simulated = false;
-    }
-
-    public void StopCarrying()
-    {
-        rb.simulated = true;
     }
 
     public bool Reserved { get; set; }

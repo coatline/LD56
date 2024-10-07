@@ -7,13 +7,12 @@ public class GrabTask : Task
     public readonly Item ToGrab;
     float pickupTimer;
 
-    public GrabTask(Item toGrab) : base()
+    public GrabTask(Item toGrab) : base(null, true)
     {
         this.ToGrab = toGrab;
-        toGrab.Reserved = true;
     }
 
-    public override void DoWork(Flemington flemington, float deltaTime)
+    public override void DoWork(float deltaTime)
     {
         pickupTimer += deltaTime;
 
@@ -24,17 +23,30 @@ public class GrabTask : Task
         }
     }
 
+    public override void Start(Flemington flemington)
+    {
+        base.Start(flemington);
+
+        //Debug.Log($"Starting, Reserved = {ToGrab.Reserved}");
+
+        if (ToGrab.Reserved)
+            Cancel();
+        else
+            ToGrab.Reserved = true;
+    }
+
     public override void Cancel()
     {
-        Debug.Log($"Canceled ");
+        //Debug.Log("Canceling and Reserved=false");
+
         ToGrab.Reserved = false;
         base.Cancel();
     }
 
     public override string GetTextString()
     {
-        string str = $"Grabbing: {ToGrab.name}";
-        return base.GetTextString() + str;
+        string str = $"Grabbing {ToGrab.name}";
+        return str;
     }
 
     public override float MinDistance => 0.05f;

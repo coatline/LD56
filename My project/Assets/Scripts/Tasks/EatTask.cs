@@ -2,22 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SleepTask : Task
+public class EatTask : Task
 {
-    readonly House house;
+    float eatTimer;
 
-    public SleepTask(House house) : base(null, true)
+    public EatTask() : base(null, true)
     {
-        house.Destroyed += Cancel;
+        NeededItems = new List<ItemType> { DataLibrary.I.Items["Food"] };
     }
 
     public override void DoWork(float deltaTime)
     {
-        flemington.NeedToBehavior[NeedType.Sleep].ModifyAmount(deltaTime);
+        eatTimer += deltaTime;
 
-        if (flemington.NeedToBehavior[NeedType.Sleep].Amount >= 1)
+        if (eatTimer >= 1)
         {
-            SoundManager.I.PlaySound("Flemington Sleep", flemington.transform.position);
+            SoundManager.I.PlaySound("Flemington Eat", flemington.transform.position);
+
+            flemington.NeedToBehavior[NeedType.Food].ModifyAmount(1);
+            GameObject.Destroy(flemington.Carrying.gameObject);
             Complete();
         }
     }
@@ -25,7 +28,7 @@ public class SleepTask : Task
     public override void Start(Flemington flemington)
     {
         base.Start(flemington);
-        flemington.DoingBubble.ShowSleeping();
+        flemington.DoingBubble.ShowEating();
     }
 
     public override void Stop()
@@ -36,9 +39,7 @@ public class SleepTask : Task
 
     public override void Finish()
     {
-        if (house != null)
-            house.Destroyed -= Cancel;
-
+        //flemington.DoingBubble.StopShowing();
         base.Finish();
     }
 
@@ -48,6 +49,6 @@ public class SleepTask : Task
         return str;
     }
 
-    public override Vector2 GetTargetPosition() => flemington.House.transform.position;
+    public override Vector2 GetTargetPosition() => flemington.transform.position;
     public override float MinDistance => 0.05f;
 }

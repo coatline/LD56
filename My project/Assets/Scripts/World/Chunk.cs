@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class Chunk : Hitable, IInspectable
 {
+    protected override void Awake()
+    {
+        base.Awake();
+        Village.I.CreateNewJob(new BreakJob(this));
+    }
+
     public override void Hit()
     {
         base.Hit();
-        Item item = Village.I.CreateItemAt(transform.position, DataLibrary.I.Items["Worm Part"]);
         SoundManager.I.PlaySound("Worm Hit", transform.position);
     }
 
@@ -15,11 +20,11 @@ public class Chunk : Hitable, IInspectable
     {
         for (int i = 0; i < 2; i++)
         {
-            Item item = Village.I.CreateItemAt(transform.position, DataLibrary.I.Items["Worm Part"]);
+            Item item = Village.I.CreateItemAt(transform.position + C.GetRandVector(-1f, 1f), DataLibrary.I.Items["Worm Part"]);
         }
         for (int i = 0; i < 2; i++)
         {
-            Item item = Village.I.CreateItemAt(transform.position, DataLibrary.I.Items["Food"]);
+            Item item = Village.I.CreateItemAt(transform.position + C.GetRandVector(-1f, 1f), DataLibrary.I.Items["Food"]);
         }
 
         SoundManager.I.PlaySound("Worm Hit", transform.position);

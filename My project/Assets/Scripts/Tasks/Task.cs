@@ -11,19 +11,22 @@ public abstract class Task
     public List<ItemType> NeededItems { get; protected set; }
     public bool IsComplete { get; protected set; }
 
+    protected Flemington flemington;
+    readonly bool cancelOnDoerDied;
     protected readonly int ID;
     readonly Job rootJob;
 
-    public Task(Job rootJob = null)
+    public Task(Job rootJob = null, bool cancelOnDoerDied = false)
     {
         this.rootJob = rootJob;
 
         if (rootJob != null)
         {
-            this.rootJob.OnCanceled += RootJobComplete;
-            this.rootJob.OnCompleted += RootJobCanceled;
+            this.rootJob.OnCanceled += RootJobCanceled;
+            this.rootJob.OnCompleted += RootJobComplete;
         }
 
+        this.cancelOnDoerDied = cancelOnDoerDied;
         ID = GetHashCode();
     }
 
@@ -32,19 +35,18 @@ public abstract class Task
         Taken?.Invoke(this);
     }
 
-    public void DoerJustDied()
+    public virtual void DoerJustDied()
     {
+        if (cancelOnDoerDied)
+            Cancel();
+        else
+            Stop();
+
         DoerDied?.Invoke(this);
     }
 
-    protected virtual void Complete()
-    {
-        IsComplete = true;
-        OnCompleted?.Invoke(this);
-    }
-
     public abstract float MinDistance { get; }
-    public abstract void DoWork(Flemington flemington, float deltaTime);
+    public abstract void DoWork(float deltaTime);
     public virtual Task GetNextTask(Flemington flemington)
     {
         if (IsComplete)
@@ -80,22 +82,35 @@ public abstract class Task
         return this;
     }
 
-    public virtual void Enter(Flemington flemington) { }
-    public virtual void Exit(Flemington flemington) { }
-    public virtual void FixCanceled(Flemington flemington)
+    public virtual void Finish()
     {
-
+        if (rootJob != null)
+        {
+            this.rootJob.OnCanceled -= RootJobCanceled;
+            this.rootJob.OnCompleted -= RootJobComplete;
+        }
     }
+    public virtual void Start(Flemington flemington) { this.flemington = flemington; }
+    public virtual void Stop() { flemington = null; }
 
     public abstract Vector2 GetTargetPosition();
     void RootJobComplete(Job job) => Cancel();
     void RootJobCanceled(Job job) => Cancel();
+
+    protected virtual void Complete()
+    {
+        Finish();
+        IsComplete = true;
+        OnCompleted?.Invoke(this);
+    }
+
     public virtual void Cancel()
     {
+        Finish();
         OnCanceled?.Invoke(this);
     }
 
-    public virtual string GetTextString() => $"{GetType().Name}\n";
+    public abstract string GetTextString();
 }
 
 public enum TaskType

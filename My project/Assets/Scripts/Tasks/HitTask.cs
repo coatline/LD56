@@ -13,24 +13,21 @@ public class HitTask : Task
         this.toHit.Broken += Cancel;
     }
 
-    public override void DoWork(Flemington flemington, float deltaTime)
+    public override void DoWork(float deltaTime)
     {
         hitTimer += deltaTime;
 
         if (hitTimer > 1)
+        {
+            toHit.Hit();
             Complete();
+        }
     }
 
-    public override void Cancel()
+    public override void Finish()
     {
         toHit.Broken -= Cancel;
-        base.Cancel();
-    }
-
-    protected override void Complete()
-    {
-        toHit.Hit();
-        base.Complete();
+        base.Finish();
     }
 
     public override string GetTextString()

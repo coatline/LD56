@@ -6,7 +6,9 @@ using UnityEngine;
 
 public abstract class Building : ItemHolder, IInspectable
 {
+    public static Action<Building> BuildingCreated;
     public event Action<Building> BuildingDestroyed;
+    public event Action<Building> BuildingCompleted;
 
     [SerializeField] ItemStack toDeliver;
     [SerializeField] TMP_Text percentText;
@@ -20,8 +22,15 @@ public abstract class Building : ItemHolder, IInspectable
     protected override void Awake()
     {
         base.Awake();
+
         required = new ItemStack(toDeliver);
-        Village.I.CreateNewJob(new DeliverJob(toDeliver, this, 4));
+
+        BuildingCreated?.Invoke(this);
+
+        if (required.Count == 0)
+            Complete();
+        else
+            Village.I.CreateNewJob(new DeliverJob(toDeliver, this, 4));
     }
 
     public override void AddItem(Item item)
@@ -35,11 +44,11 @@ public abstract class Building : ItemHolder, IInspectable
         toDeliver.Count--;
 
         if (percentComplete >= 1)
-            Completed();
+            Complete();
         else
-            percentText.text = $"{percentComplete * 100}%";
+            percentText.text = $"{percentComplete * 100:F0}%";
 
-        sr.color = C.SetAlpha(sr.color, (percentComplete * 0.5f) + 0.5f);
+        sr.color = C.SetAlpha(sr.color, (percentComplete * 0.8f) + 0.2f);
     }
 
     float PercentComplete()
@@ -53,11 +62,12 @@ public abstract class Building : ItemHolder, IInspectable
         return (float)GetStoredAmount(this.required.Item) / required;
     }
 
-    protected virtual void Completed()
+    protected virtual void Complete()
     {
         SoundManager.I.PlaySound("Building Complete", transform.position);
         built = true;
         percentText.enabled = false;
+        BuildingCompleted?.Invoke(this);
     }
 
     protected override void OnDestroy()

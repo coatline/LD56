@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class IdleTask : Task
 {
-    readonly Flemington flemington;
     float idleStartTime;
     Vector2 destination;
     float idleDuration;
     float idleTimer;
 
-    public IdleTask(Flemington flemington) : base()
+    public IdleTask() : base(null, true)
     {
-        this.flemington = flemington;
-        NewPosition();
     }
 
-    public override void DoWork(Flemington flemington, float deltaTime)
+    public override void DoWork(float deltaTime)
     {
         if (idleTimer > idleDuration)
             NewPosition();
@@ -24,16 +21,17 @@ public class IdleTask : Task
             idleTimer += deltaTime;
     }
 
-    public override void Enter(Flemington flemington)
+    public override void Start(Flemington flemington)
     {
-        idleStartTime = Time.time;
+        base.Start(flemington);
+        NewPosition();
+        idleStartTime = TimeManager.I.SimulationTime;
     }
 
     void NewPosition()
     {
-        float dir = Random.Range(-1f, 1f);
-        destination = flemington.Position + new Vector2(dir, 0);
-        idleDuration = Random.Range(.5f, 4f);
+        destination = flemington.transform.position + C.GetRandVector(-1, 1f);
+        idleDuration = Random.Range(1f, 4f);
         idleTimer = 0;
     }
 
@@ -41,8 +39,8 @@ public class IdleTask : Task
 
     public override string GetTextString()
     {
-        string str = $"Idle ({C.DisplayTimeFromSeconds((int)(Time.time - idleStartTime))})";
-        return base.GetTextString() + str;
+        string str = $"Idle ({C.DisplayTimeFromSeconds((int)(TimeManager.I.SimulationTime - idleStartTime))})";
+        return str;
     }
 
     public override Vector2 GetTargetPosition() => destination;

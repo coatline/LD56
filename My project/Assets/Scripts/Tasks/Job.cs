@@ -18,13 +18,13 @@ public abstract class Job
 
     protected virtual void Complete()
     {
-        Debug.Log($"Completed {GetType().Name}");
+        //Debug.Log($"Completed {GetType().Name}");
         OnCompleted?.Invoke(this);
     }
 
     protected virtual void Cancel()
     {
-        Debug.Log($"Canceled {GetType().Name}");
+        //Debug.Log($"Canceled {GetType().Name}");
         OnCanceled?.Invoke(this);
     }
 
@@ -67,9 +67,15 @@ public abstract class Job
     {
         availableTasks.Add(task);
         task.OnCompleted += TaskCompleted;
+
         task.DoerDied += ReturnTask;
         task.Taken += TakeTask;
         NewAvailableTask?.Invoke(this);
+    }
+
+    protected virtual void TaskCanceled(Task task)
+    {
+
     }
 
     protected virtual void TaskCompleted(Task task)
@@ -79,6 +85,8 @@ public abstract class Job
         task.Taken -= TakeTask;
         availableTasks.Remove(task);
     }
+
+
 
     public IEnumerable<Task> GetAvailableTasks => availableTasks;
 }

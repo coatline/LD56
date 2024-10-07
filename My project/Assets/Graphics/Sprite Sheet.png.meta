@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 8
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -257,12 +257,12 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sign
+      name: Church
       rect:
         serializedVersion: 2
-        x: 8
-        y: 15
-        width: 11
+        x: 7
+        y: 18
+        width: 7
         height: 9
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -370,7 +370,7 @@ TextureImporter:
         width: 5
         height: 14
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -391,7 +391,7 @@ TextureImporter:
         width: 4
         height: 10
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -399,6 +399,90 @@ TextureImporter:
       bones: []
       spriteID: a84eeca28ba80b14193afb94046660c5
       internalID: 370196807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Eating Bubble
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 46
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ceba29a1928ecfd448bb1e7c6a22ddd9
+      internalID: 1625913847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GroundTile
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 45
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96c9c73ff567e5a4cbcaf741c8202edb
+      internalID: -833224150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WormHole
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 10
+        width: 8
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 125cfbc4a113d224db0b4a2d3566072d
+      internalID: -2075718355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dirt Mine
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 31
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bd6dfcd390b63f44a26d02d62fe72fd
+      internalID: 1289356298
       vertices: []
       indices: 
       edges: []
@@ -415,20 +499,23 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Biggest Worm: 844116136
+      Church: 1619862228
+      Dirt Mine: 1289356298
       Dirt Particle: 413314269
       Dirt Pile: 1042254286
+      Eating Bubble: 1625913847
       Farm: -1851772277
       Flemington: -1928644229
       Flimenton: -672213121
       Food: 1466551139
-      Ground: -633394264
+      GroundTile: -833224150
       Medium Worm: -636337124
-      Sign: 1619862228
       Sleep Bubble: -225308696
       Small Worm: 370196807
       SpeechBubble: -381198229
       Storage: -179684817
       Worm Ring: -1788491326
+      WormHole: -2075718355
       WormPart: 2129688955
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

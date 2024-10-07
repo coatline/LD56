@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4815984905298147655}
   - component: {fileID: 4206513715389558863}
-  - component: {fileID: 827236407489952648}
-  - component: {fileID: 680493850953653257}
-  m_Layer: 8
+  - component: {fileID: -8512982206882635252}
+  - component: {fileID: 7808409615265211287}
+  m_Layer: 9
   m_Name: Medium Worm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,15 +80,43 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  startingHP: 2
+  startingHP: 12
   sr: {fileID: 3690522291553416955}
   shakeSpeed: 10
   shakeTime: 0.5
-  itemsPerHit: 2
   chunksOnDestroy: 2
-  moveSpeed: 15.68
-  moveOutOfGroundAmount: 1
---- !u!70 &827236407489952648
+  dirtOnDestroy: 3
+  moveSpeed: 0.35
+  chunkPrefab: {fileID: 4206513715389558863, guid: 9902dd2f9ba4a6f40b4cdf0c93aef9f3, type: 3}
+  size: Medium
+--- !u!50 &-8512982206882635252
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2805295521661066926}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 10
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!70 &7808409615265211287
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,35 +149,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.26978952, y: 0.7879746}
+  m_Size: {x: 0.56388485, y: 1.6386151}
   m_Direction: 0
---- !u!50 &680493850953653257
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2805295521661066926}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &8845672997748189171
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,7 +161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7579157502600223840}
   - component: {fileID: 3690522291553416955}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

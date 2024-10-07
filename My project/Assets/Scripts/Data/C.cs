@@ -6,6 +6,13 @@ using UnityEngine.EventSystems;
 
 public static class C
 {
+    /// <summary>
+    /// Subtract 90 when using
+    /// </summary>
+    public static float GetZAngleFromDir(Vector2 dir) => Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+    public static Vector3 GetRandVector(float minVal, float maxVal) => new Vector2(Random.Range(minVal, maxVal), Random.Range(minVal, maxVal));
+
     public static bool MouseIsOverUI() => EventSystem.current.IsPointerOverGameObject();
 
     public static Vector2 GetCameraSizeInUnits(Camera cam) => new Vector2(cam.orthographicSize * cam.aspect, cam.orthographicSize);
@@ -166,6 +173,26 @@ public static class C
     {
         return names[Random.Range(0, names.Length)];
     }
+
+    public static string GetRandomSubject()
+    {
+        return subjects[Random.Range(0, subjects.Length)];
+    }
+
+    static string[] subjects = new string[12] {
+        "fridges",
+        "basketball",
+        "Fortnite",
+        "Among Us",
+        "Ludum Dare",
+        "tiny creatures",
+        "Dababy",
+        "their mom",
+        "sunsets",
+        "keyboards",
+        "mice",
+        "love"
+    };
 
     static string[] names = new string[10]
     {

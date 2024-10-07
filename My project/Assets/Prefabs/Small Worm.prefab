@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4815984905298147655}
   - component: {fileID: 4206513715389558863}
-  - component: {fileID: 827236407489952648}
-  - component: {fileID: 680493850953653257}
-  m_Layer: 8
+  - component: {fileID: 3554416576843783368}
+  - component: {fileID: -2703819807186199592}
+  m_Layer: 9
   m_Name: Small Worm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,15 +80,16 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  startingHP: 2
+  startingHP: 6
   sr: {fileID: 3690522291553416955}
   shakeSpeed: 10
   shakeTime: 0.5
-  itemsPerHit: 1
   chunksOnDestroy: 1
-  moveSpeed: 15.68
-  moveOutOfGroundAmount: 1
---- !u!70 &827236407489952648
+  dirtOnDestroy: 1
+  moveSpeed: 0.25
+  chunkPrefab: {fileID: 4206513715389558863, guid: 9902dd2f9ba4a6f40b4cdf0c93aef9f3, type: 3}
+  size: Small
+--- !u!70 &3554416576843783368
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,13 +118,13 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.2021907, y: 0.5849092}
+  m_Size: {x: 0.5, y: 1.1422706}
   m_Direction: 0
---- !u!50 &680493850953653257
+--- !u!50 &-2703819807186199592
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -136,9 +137,9 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 10
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -160,7 +161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7579157502600223840}
   - component: {fileID: 3690522291553416955}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

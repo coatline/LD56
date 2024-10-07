@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Flemington : MonoBehaviour, IInspectable
 {
+    public static event System.Action<Flemington> Created;
     public event System.Action<Flemington> Died;
 
     public Flemington ToTalkTo { get; set; }
@@ -20,13 +21,14 @@ public class Flemington : MonoBehaviour, IInspectable
     public Item Carrying { get; private set; }
     public Stats Stats { get; private set; }
     public House House { get; private set; }
+    public bool Dead { get; private set; }
 
     public Vector2 Destination { get; set; }
     public bool Traveling { get; set; }
 
     public Dictionary<NeedType, NeedBehavior> NeedToBehavior { get; private set; }
+    public List<string> conversations;
     List<Need> needs;
-    bool dead;
 
     void Awake()
     {
@@ -37,6 +39,7 @@ public class Flemington : MonoBehaviour, IInspectable
 
         NeedToBehavior = new Dictionary<NeedType, NeedBehavior>();
         needs = new List<Need>(DataLibrary.I.Needs.UnsortedArray.ToList());
+        conversations = new List<string>();
 
         for (int i = 0; i < needs.Count; i++)
         {
@@ -45,18 +48,20 @@ public class Flemington : MonoBehaviour, IInspectable
             NeedToBehavior.Add(need.Type, behavior);
             behavior.Died += Die;
         }
+
+        Created?.Invoke(this);
     }
 
     void Update()
     {
-        if (dead)
+        if (Dead)
             return;
 
         if (Carrying != null)
             Carrying.transform.position = Position + new Vector2(0, 0.15f);
 
-        StateMachine.Update(Time.deltaTime);
         UpdateNeeds();
+        StateMachine.Update(TimeManager.I.DeltaTime);
     }
 
     void UpdateNeeds()
@@ -64,7 +69,7 @@ public class Flemington : MonoBehaviour, IInspectable
         for (int i = 0; i < needs.Count; i++)
         {
             Need need = needs[i];
-            NeedToBehavior[need.Type].Update(Time.deltaTime);
+            NeedToBehavior[need.Type].Update(TimeManager.I.DeltaTime);
         }
     }
 
@@ -91,19 +96,16 @@ public class Flemington : MonoBehaviour, IInspectable
     public void PickupItem(Item item)
     {
         Carrying = item;
-        Carrying.StartCarrying();
     }
 
     public void DropItem()
     {
         Carrying.Reserved = false;
-        Carrying.StopCarrying();
         Carrying = null;
     }
 
     public virtual void StoreItem(ItemHolder itemHolder)
     {
-        Debug.Log("Thing");
         itemHolder.SendItem(Carrying);
         Carrying = null;
     }
@@ -122,29 +124,17 @@ public class Flemington : MonoBehaviour, IInspectable
 
     void Die(string cause)
     {
-        if (dead)
+        if (Dead)
             return;
 
-        dead = true;
+        Dead = true;
         NotificationShower.I.ShowNotification($"<color=red>{Name} died! </color>Cause: {cause}", 5f);
-
-        // Put our Task back
-        StateMachine.Died();
-
-        // Drop what I was carrying
-        if (Carrying != null)
-            DropItem();
-
-        SoundManager.I.PlaySound("Flemington Die", transform.position);
-        Died?.Invoke(this);
         Destroy(gameObject);
     }
 
-    public bool AtPosition(Vector2 pos, float minDistance) => Mathf.Abs(Position.x - pos.x) < minDistance /*&& Mathf.Abs(Position.y - pos.y) < minDistance * 2*/;
+    public bool AtPosition(Vector2 pos, float minDistance) => Mathf.Abs(Position.x - pos.x) < minDistance && Mathf.Abs(Position.y - pos.y) < minDistance;
 
     public Vector2 Position => transform.position;
-    //public void SetXVelocity(float xVel) => rb.velocity = new Vector2(xVel, rb.velocity.y);
-    //public void SetYVelocity(float yVel) => rb.velocity = new Vector2(rb.velocity.x, yVel);
 
     public string Name => name;
 
@@ -171,6 +161,15 @@ public class Flemington : MonoBehaviour, IInspectable
 
     void OnDestroy()
     {
+        // Put our Task back
+        StateMachine.Died();
+
+        // Drop what I was carrying
+        if (Carrying != null)
+            DropItem();
+
+        SoundManager.I.PlaySound("Flemington Die", transform.position);
+        Died?.Invoke(this);
         Destroyed?.Invoke();
     }
 }
