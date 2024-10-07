@@ -117,7 +117,14 @@ MonoBehaviour:
     Count: 10
   percentText: {fileID: 1248420635546502679}
   sr: {fileID: 5220368927910530025}
-  spawnPoints: []
+  spawnPoints:
+  - {fileID: 117765259447200351}
+  - {fileID: 1881409905146970633}
+  - {fileID: 7226332977341070907}
+  - {fileID: 4615575244142802454}
+  - {fileID: 3371940610067294336}
+  - {fileID: 4325669713304367303}
+  - {fileID: 7524770771670128291}
 --- !u!212 &5220368927910530025
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -12,15 +12,19 @@ public class Worm : Hitable
         {
             Village.I.CreateItemAt(transform.position, DataLibrary.I.Items["Worm Part"]);
         }
+
+        SoundManager.I.PlaySound("Worm Hit", transform.position);
     }
 
     protected override void Break()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 4; i++)
         {
             Chunk chunk = Village.I.CreateChunkAt(transform.position);
             chunk.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), Random.Range(10f, 50f)));
         }
+
+        SoundManager.I.PlaySound("Worm Die", transform.position);
 
         base.Break();
     }

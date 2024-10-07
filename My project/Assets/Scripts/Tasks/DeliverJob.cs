@@ -9,7 +9,7 @@ public class DeliverJob : Job
 
         for (int i = 0; i < toDeliver.Count; i++)
         {
-            CreateTask(new DeliverTask(this, toDeliver.Item, storage));
+            CreateTask(new DeliverTask(toDeliver.Item, storage));
         }
     }
 }

@@ -4,43 +4,80 @@ using UnityEngine;
 public abstract class Task
 {
     public event System.Action<Task> OnCompleted;
+    public event System.Action<Task> OnCanceled;
+    public event System.Action<Task> DoerDied;
+    public event System.Action<Task> Taken;
 
     public List<ItemType> NeededItems { get; protected set; }
     public bool IsComplete { get; protected set; }
 
-    public readonly Job RootJob;
     protected readonly int ID;
 
-    public Task(Job rootJob)
+    public Task()
     {
-        if (rootJob != null)
-        {
-            RootJob = rootJob;
-            RootJob.OnCompleted += ParentJobCompleted;
-        }
-
         ID = GetHashCode();
     }
 
-    public void RemakeAvailable()
+    public void Take()
     {
-        RootJob.ReturnTask(this);
+        Taken?.Invoke(this);
     }
 
-    protected virtual void Completed()
+    public void DoerJustDied()
     {
-        if (RootJob != null)
-            RootJob.OnCompleted -= ParentJobCompleted;
+        DoerDied?.Invoke(this);
+    }
 
+    protected virtual void Complete()
+    {
         IsComplete = true;
         OnCompleted?.Invoke(this);
     }
 
-    void ParentJobCompleted(Job job) => Completed();
+    public abstract float MinDistance { get; }
+    public virtual void Start() { }
+    public abstract void DoWork(Flemington flemington, float deltaTime);
+    public virtual Task GetNextTask(Flemington flemington)
+    {
+        if (IsComplete)
+            return null;
 
-    public abstract void WorkOn(Flemington flemington, float deltaTime);
+        // Do we need items?
+        if (NeededItems != null)
+        {
+            // Do we have the required items?
+            ItemType needed = NeededItems[0];
+
+            if (flemington.Carrying != null)
+            {
+                ItemType itemOwned = flemington.Carrying.Type;
+
+                if (itemOwned == needed)
+                    // Every requirement has been met, now complete the RootTask!
+                    return this;
+            }
+            else
+            {
+                Item toPickup = Village.I.GetUnreservedItemOfType(needed);
+
+                // Can we find the required items?
+                if (toPickup != null)
+                    return new GrabTask(toPickup);
+                else
+                    // We have no way of completing this RootTask.
+                    return null;
+            }
+        }
+
+        return this;
+    }
+
+
     public abstract Vector2 GetTargetPosition();
-    public virtual void Cancel() { }
+    public virtual void Cancel()
+    {
+        OnCanceled?.Invoke(this);
+    }
 
     public virtual string GetTextString() => $"{GetType().Name}\n";
 }

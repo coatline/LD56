@@ -127,6 +127,7 @@ public class Flemington : MonoBehaviour, IInspectable
             Village.I.HouseAvailable(House);
         }
 
+        SoundManager.I.PlaySound("Flemington Die", transform.position);
         Died?.Invoke(this);
         Destroy(gameObject);
     }

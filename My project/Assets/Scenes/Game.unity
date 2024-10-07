@@ -1525,7 +1525,6 @@ MonoBehaviour:
   flemingtonPrefab: {fileID: 5697146020409053839, guid: c787cb9321c23204a941f96c05f785f1, type: 3}
   chunkPrefab: {fileID: 4206513715389558863, guid: 9902dd2f9ba4a6f40b4cdf0c93aef9f3, type: 3}
   wormPrefab: {fileID: 4206513715389558863, guid: 3542432b580afc54990095319260341d, type: 3}
-  housePrefab: {fileID: 4135818868353475300, guid: b0308052234293a4b8f220d28db220eb, type: 3}
   itemPrefab: {fileID: 468646428714853985, guid: 82f46ea331be09847ad2817b3dc894ed, type: 3}
 --- !u!1 &699273356
 GameObject:
@@ -2582,6 +2581,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1213412376}
   m_CullTransparentMesh: 1
+--- !u!1 &1508537489
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1508537490}
+  - component: {fileID: 1508537491}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1508537490
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508537489}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1508537491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508537489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e8ace88d798ce4da6c2169522414fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 0
+  audioSourcePrefab: {fileID: 597956272633121245, guid: ed2ae7ee5bc8fc448af5c810a541a74a, type: 3}
 --- !u!1 &1611662610
 GameObject:
   m_ObjectHideFlags: 0
@@ -2791,7 +2836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSpawnInterval: 32.63
-  initialTimerValue: 30
+  initialTimerValue: 0
 --- !u!4 &1623117264
 Transform:
   m_ObjectHideFlags: 0
@@ -3909,3 +3954,4 @@ SceneRoots:
   - {fileID: 1611662612}
   - {fileID: 718100672}
   - {fileID: 972338986}
+  - {fileID: 1508537490}

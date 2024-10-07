@@ -66,8 +66,6 @@ public class Inputs : MonoBehaviour
         if (key != -1)
             Time.timeScale = key;
 
-        //Village.I.CreateItemAt(C.MouseWorldPosition(cam));
-
         if (Input.GetKeyDown(KeyCode.F1))
             jobDisplayer.SetVisible(!jobDisplayer.IsVisible);
 

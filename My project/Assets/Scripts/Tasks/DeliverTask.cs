@@ -7,17 +7,18 @@ public class DeliverTask : Task
     readonly ItemType toDeliver;
     readonly ItemHolder destination;
 
-    public DeliverTask(Job parentJob, ItemType toDeliver, ItemHolder itemHolder) : base(parentJob)
+
+    public DeliverTask(ItemType toDeliver, ItemHolder itemHolder) : base()
     {
         this.toDeliver = toDeliver;
         this.destination = itemHolder;
         NeededItems = new List<ItemType> { toDeliver };
     }
 
-    public override void WorkOn(Flemington flemington, float deltaTime)
+    public override void DoWork(Flemington flemington, float deltaTime)
     {
         flemington.StoreItem(destination);
-        Completed();
+        Complete();
     }
 
     public override string GetTextString()
@@ -26,5 +27,6 @@ public class DeliverTask : Task
         return base.GetTextString() + str;
     }
 
+    public override float MinDistance => 0.05f;
     public override Vector2 GetTargetPosition() => destination.transform.position;
 }

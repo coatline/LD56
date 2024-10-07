@@ -16,7 +16,7 @@ public class Farm : Building
         while (true)
         {
             Grow();
-            yield return new WaitForSeconds(Random.Range(15, 40f));
+            yield return new WaitForSeconds(Random.Range(15, 20f));
         }
     }
 
@@ -25,8 +25,9 @@ public class Farm : Building
         //Transform point = spawnPoints[Random.Range(0, spawnPoints.Length)];
         for (int i = 0; i < spawnPoints.Length; i++)
         {
-            Village.I.CreateFoodAt(spawnPoints[i].transform.position);
+            Village.I.CreateItemAt(spawnPoints[i].transform.position, DataLibrary.I.Items["Food"]);
         }
+        SoundManager.I.PlaySound("Farm Produce", transform.position);
     }
 
     //public override string Name

@@ -23,6 +23,7 @@ public class Building : ItemHolder, IInspectable
     {
         base.AddItem(item);
         percentComplete = PercentComplete();
+        SoundManager.I.PlaySound("Item Delivered", transform.position);
 
         if (percentComplete >= 1)
             Completed();
@@ -45,6 +46,7 @@ public class Building : ItemHolder, IInspectable
 
     protected virtual void Completed()
     {
+        SoundManager.I.PlaySound("Building Complete", transform.position);
         built = true;
         percentText.enabled = false;
     }

@@ -8,19 +8,22 @@ public class Chunk : Hitable, IInspectable
     {
         base.Hit();
         Item item = Village.I.CreateItemAt(transform.position, DataLibrary.I.Items["Worm Part"]);
+        SoundManager.I.PlaySound("Worm Hit", transform.position);
     }
 
     protected override void Break()
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 2; i++)
         {
             Item item = Village.I.CreateItemAt(transform.position, DataLibrary.I.Items["Worm Part"]);
         }
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 2; i++)
         {
             Item item = Village.I.CreateItemAt(transform.position, DataLibrary.I.Items["Food"]);
         }
 
+        SoundManager.I.PlaySound("Worm Hit", transform.position);
+        SoundManager.I.PlaySound("Worm Hit", transform.position);
         base.Break();
     }
 

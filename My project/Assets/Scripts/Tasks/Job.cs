@@ -59,12 +59,16 @@ public abstract class Job
     {
         availableTasks.Add(task);
         task.OnCompleted += TaskCompleted;
+        task.DoerDied += ReturnTask;
+        task.Taken += TakeTask;
         NewAvailableTask?.Invoke(this);
     }
 
     protected virtual void TaskCompleted(Task task)
     {
         task.OnCompleted -= TaskCompleted;
+        task.DoerDied -= ReturnTask;
+        task.Taken -= TakeTask;
         availableTasks.Remove(task);
     }
 

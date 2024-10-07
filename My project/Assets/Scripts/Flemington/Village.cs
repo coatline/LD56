@@ -16,7 +16,6 @@ public class Village : Singleton<Village>
     List<House> availableHouses;
     List<Chunk> chunks;
     List<Item> items;
-    List<Item> food;
     List<Job> jobs;
 
     protected override void Awake()
@@ -28,7 +27,6 @@ public class Village : Singleton<Village>
         availableHouses = new List<House>();
         chunks = new List<Chunk>();
         items = new List<Item>();
-        food = new List<Item>();
         jobs = new List<Job>();
     }
 
@@ -37,6 +35,7 @@ public class Village : Singleton<Village>
         Flemington newFleminton = Instantiate(flemingtonPrefab, pos, Quaternion.identity);
         newFleminton.Died += FlemingtonDied;
         flemingtons.Add(newFleminton);
+        SoundManager.I.PlaySound("Flemington Join", pos);
         NotificationShower.I.ShowNotification($"{newFleminton.name} joined!", 3f);
     }
 
@@ -72,6 +71,7 @@ public class Village : Singleton<Village>
     {
         Worm newWorm = Instantiate(wormPrefab, pos, Quaternion.identity);
         CreateNewJob(new BreakJob(newWorm));
+        SoundManager.I.PlaySound("Worm Spawn", pos);
         return newWorm;
     }
 
@@ -108,20 +108,9 @@ public class Village : Singleton<Village>
         return newItem;
     }
 
-    public Item CreateFoodAt(Vector3 pos)
-    {
-        Item newItem = CreateItemAt(pos, DataLibrary.I.Items["Food"]);
-        food.Add(newItem);
-        return newItem;
-    }
-
     public void DestroyItem(Item item)
     {
         C.RemoveFromDictionaryWithList(typeToItem, item.Type, item);
-
-        if (item.Name == "Food")
-            food.Remove(item);
-
         Destroy(item.gameObject);
     }
 
@@ -180,8 +169,8 @@ public class Village : Singleton<Village>
         return closestTask;
     }
 
-    public void TakeTask(Task task)
-    {
-        task.RootJob.TakeTask(task);
-    }
+    //public void TakeTask(Task task)
+    //{
+    //    task.RootJob.TakeTask(task);
+    //}
 }

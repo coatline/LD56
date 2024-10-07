@@ -7,13 +7,13 @@ public class HitTask : Task
     readonly Hitable toHit;
     float hitTimer;
 
-    public HitTask(Job parentJob, Hitable toHit) : base(parentJob)
+    public HitTask(Hitable toHit) : base()
     {
         this.toHit = toHit;
-        this.toHit.Broken += Completed;
+        this.toHit.Broken += Complete;
     }
 
-    public override void WorkOn(Flemington flemington, float deltaTime)
+    public override void DoWork(Flemington flemington, float deltaTime)
     {
         hitTimer += deltaTime;
 
@@ -21,16 +21,11 @@ public class HitTask : Task
             Complete();
     }
 
-    void Complete()
+    protected override void Complete()
     {
+        toHit.Broken -= Complete;
         toHit.Hit();
-        Completed();
-    }
-
-    protected override void Completed()
-    {
-        toHit.Broken -= Completed;
-        base.Completed();
+        base.Complete();
     }
 
     public override string GetTextString()
@@ -39,5 +34,6 @@ public class HitTask : Task
         return base.GetTextString() + str;
     }
 
+    public override float MinDistance => 0.2f;
     public override Vector2 GetTargetPosition() => toHit.transform.position;
 }

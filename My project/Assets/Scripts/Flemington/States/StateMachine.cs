@@ -5,247 +5,282 @@ public class StateMachine
 {
     readonly Flemington flemington;
 
-    public Task RootTask { get; private set; }
-    public Task CurrentTask
-    {
-        get
-        {
-            if (currentTaskState == null) return null;
-            return currentTaskState.Task;
-        }
-    }
+    public float IdleStartTime { get; private set; }
+    Task idleTask;
 
-    TaskState currentTaskState;
-    IdleState idleState;
-    State currentState;
+    // Ordered in terms of greatest to least needs
+    List<Task> needTasks;
 
-    public float idleTime;
+    Task currentTask;
+    Task rootTask;
 
     public StateMachine(Flemington flemington)
     {
         this.flemington = flemington;
-        idleState = new IdleState(flemington);
-        currentState = idleState;
+        idleTask = new IdleTask(flemington);
+
+        SetRootTask(idleTask, idleTask);
+
+        needTasks = new List<Task>();
     }
 
     public void Update(float deltaTime)
     {
-        // We finished the last state; choose a new one.
-        if (currentState == null || currentState == idleState)
-            SetState(ChooseNewState());
-
-        currentState.Update(deltaTime);
+        ChooseNextTask();
+        Behave();
     }
 
-    public void SetState(State state)
+    void Behave()
     {
-        if (currentState == state) return;
+        Vector2 destination = currentTask.GetTargetPosition();
 
-        // Exit current state
-        if (currentState != null)
-            currentState.Exit();
-
-        currentState = state;
-
-        // Enter new state
-        if (currentState != null)
-            currentState.Enter();
-    }
-
-    State ChooseNewState()
-    {
-        // Can we do any more work on our current RootTask?
-        State newState = EvaluateTask(RootTask);
-
-        // If we are idle get a job.
-        if (newState == idleState)
+        if (flemington.AtPosition(destination, 0.05f) == false)
         {
-            List<Need> checkedNeeds = new List<Need>();
-
-
-            do
-            {
-                NeedBehavior biggestNeed = flemington.GetBiggestNeed(checkedNeeds);
-
-                if (biggestNeed == null)
-                    break;
-
-                checkedNeeds.Add(biggestNeed.Need);
-
-                if (biggestNeed.Severity >= NeedSeverity.Okay)
-                {
-                    NeedType type = biggestNeed.Need.Type;
-                    switch (type)
-                    {
-                        case NeedType.Sleep:
-                            if (flemington.House == null)
-                            {
-                                House availableHousing = Village.I.PeekAvailableHouse();
-
-                                if (availableHousing != null)
-                                    Village.I.ClaimHouse(availableHousing, flemington);
-                            }
-
-                            if (flemington.House != null)
-                                return new SleepState(flemington);
-                            break;
-                        case NeedType.Social:
-                            // Is there anyone to talk to?
-                            Flemington availableToTalk = Village.I.GetAvailableFlemington(flemington);
-
-                            if (availableToTalk != null)
-                                return new TalkState(flemington, availableToTalk);
-                            break;
-                        case NeedType.Food:
-                            if (flemington.Carrying != null && flemington.Carrying.Name == "Food")
-                            {
-                                return new EatState(flemington);
-                            }
-
-                            Item food = Village.I.GetUnreservedItemOfType(DataLibrary.I.Items["Food"]);
-
-                            if (food != null)
-                                return NewTaskState(new GrabTask(null, food));
-
-                            break;
-                    }
-                }
-            }
-            while (true);
-
-            // Get a job.
-
-            List<Task> tried = new();
-
-            idleTime += Time.deltaTime;
-
-            do
-            {
-                // Find the closest Task, excluding those we already thought about
-                Task closestTask = Village.I.PeekClosestTask(flemington.transform.position, tried);
-
-                // No available or doable tasks
-                if (closestTask == null)
-                    break;
-
-                // This is so that we don't get an infinite loop when we keep returning idle, putting the task back on the queue and all that.
-                tried.Add(closestTask);
-
-                // Evaluate whether or not we can take this task
-                newState = EvaluateTask(closestTask);
-
-                if (RootTask == closestTask)
-                {
-                    // We decided we could do this task.
-                    Village.I.TakeTask(closestTask);
-                    idleTime = 0;
-                }
-            }
-            while (newState == idleState);
+            // Update path visual
+            flemington.Destination = destination;
+            Move(destination);
         }
-
-        return newState;
-    }
-
-    State EvaluateTask(Task task)
-    {
-        if (task == null || task.IsComplete)
-            return idleState;
-
-        // Do we need items?
-        if (task.NeededItems != null)
+        else
         {
-            // Do we have the required items?
-            ItemType needed = task.NeededItems[0];
-
-            if (flemington.Carrying != null)
-            {
-                ItemType itemOwned = flemington.Carrying.Type;
-
-                if (itemOwned != null)
-                {
-                    // Every requirement has been met, now complete the RootTask!
-                    TakeRootTask(task);
-                    return NewTaskState(task);
-                }
-            }
-            else
-            {
-                Item toPickup = Village.I.GetUnreservedItemOfType(needed);
-
-                // Can we find the required items?
-                if (toPickup != null)
-                {
-                    TakeRootTask(task);
-                    return NewTaskState(new GrabTask(RootTask.RootJob, toPickup));
-                }
-                else
-                {
-                    // We have no way of completing this RootTask.
-                    // TODO: mark as insufficient materials.
-                    //task.insuffic
-                    return idleState;
-                }
-            }
+            // Do work.
+            currentTask.DoWork(flemington, Time.deltaTime);
         }
-
-        // Every requirement has been met, now complete the RootTask!
-        TakeRootTask(task);
-        return NewTaskState(task);
     }
 
-    TaskState NewTaskState(Task task)
+    void RootTaskCanceled(Task task)
     {
-        currentTaskState = new TaskState(task, flemington);
-        //currentTaskState.DoneWithTask += DoneWithTask;
-        return currentTaskState;
+        SetRootTask(idleTask, idleTask);
     }
 
-    void TakeRootTask(Task newRoot)
+    void CurrentTaskCanceled(Task task)
     {
-        if (RootTask == newRoot)
+        SetCurrentTask(idleTask);
+    }
+
+    // set root before current
+    void SetRootTask(Task newRoot, Task newCurrent)
+    {
+        // This may be a problem/.....
+        if (newRoot == rootTask)
             return;
 
-        if (RootTask != null)
-            RootTask.OnCompleted -= DoneWithRoot;
+        if (rootTask != null)
+        {
+            rootTask.OnCompleted -= RootTaskCanceled;
+            rootTask.OnCanceled -= RootTaskCanceled;
+        }
 
-        RootTask = newRoot;
-        RootTask.OnCompleted += DoneWithRoot;
+        rootTask = newRoot;
+
+        rootTask.OnCompleted += RootTaskCanceled;
+        rootTask.OnCanceled += RootTaskCanceled;
+
+        SetCurrentTask(newCurrent);
+    }
+
+    void SetCurrentTask(Task newCurrent)
+    {
+        if (newCurrent == currentTask)
+            return;
+
+        if (currentTask != null)
+        {
+            currentTask.OnCompleted -= CurrentTaskCanceled;
+            currentTask.OnCanceled -= CurrentTaskCanceled;
+        }
+
+        currentTask = newCurrent;
+
+        if (newCurrent != rootTask)
+        {
+            currentTask.OnCompleted += CurrentTaskCanceled;
+            currentTask.OnCanceled += CurrentTaskCanceled;
+        }
+
+        currentTask.Start();
+    }
+
+    void Move(Vector2 destination)
+    {
+        Vector2 dist = (destination - flemington.Position);
+        Vector2 movement = dist.normalized * Time.fixedDeltaTime * flemington.Stats.speed * 1f;
+
+        if (Mathf.Abs(flemington.Position.x - destination.x) < 1f)
+            flemington.SetYVelocity(movement.y);
+
+        flemington.SetXVelocity(movement.x);
+    }
+
+    void ChooseNextTask()
+    {
+        if (currentTask != idleTask)
+            return;
+
+        // Can we do any more work on our current task?
+        Task nextTask = rootTask.GetNextTask(flemington);
+
+        // We couldn't do anything more on our root task
+        if (nextTask == null)
+            SetRootTask(idleTask, idleTask);
+        else
+        {
+            Debug.Log("Doing next task in root..");
+            SetCurrentTask(nextTask);
+        }
+
+        // If the next thing we can do on our current Root Task is Idle, find a new task.
+        if (currentTask == idleTask)
+            ChooseNewRootTask();
+    }
+
+    void ChooseNewRootTask()
+    {
+        Debug.Log("Choosing new root..");
+
+        //for (int i = 0; i < needTasks.Count; i++)
+        //{
+        //    Task needTask = needTasks[i];
+        //    Task nextTask = needTask.GetNextTask(flemington);
+        //    if (nextTask == null)
+        //        continue;
+        //    else
+        //    {
+        //        RootTask = needTask;
+        //        CurrentTask = nextTask;
+        //    }
+        //}
+
+        if (rootTask == idleTask)
+            TryGetJobTask();
+    }
+
+    void TryGetJobTask()
+    {
+        // Find the closest doable job.
+        List<Task> tried = new();
+
+        do
+        {
+            // Find the closest Task, excluding those we already thought about
+            Task closestRootTask = Village.I.PeekClosestTask(flemington.transform.position, tried);
+
+            // No available or doable tasks
+            if (closestRootTask == null)
+                break;
+
+            // This is so that we don't get an infinite loop when we keep returning idle, putting the task back on the queue and all that.
+            tried.Add(closestRootTask);
+
+            // Evaluate whether or not we can take this task
+            Task nextTaskFromThis = closestRootTask.GetNextTask(flemington);
+
+            if (nextTaskFromThis != null)
+            {
+                // We can do this task.
+                closestRootTask.Take();
+                SetRootTask(closestRootTask, nextTaskFromThis);
+            }
+        }
+        while (currentTask == idleTask);
+    }
+
+    void AddNeedTasks()
+    {
+        List<Need> checkedNeeds = new List<Need>();
+        needTasks = new List<Task>();
+
+        do
+        {
+            NeedBehavior biggestNeed = flemington.GetBiggestNeed(checkedNeeds);
+
+            if (biggestNeed == null)
+                break;
+
+            checkedNeeds.Add(biggestNeed.Need);
+
+            if (biggestNeed.Severity >= NeedSeverity.Okay)
+            {
+                NeedType type = biggestNeed.Need.Type;
+                switch (type)
+                {
+                    case NeedType.Sleep:
+                        if (flemington.House == null)
+                        {
+                            House availableHousing = Village.I.PeekAvailableHouse();
+
+                            if (availableHousing != null)
+                                Village.I.ClaimHouse(availableHousing, flemington);
+                        }
+
+                        if (flemington.House != null)
+                        {
+                            SleepTask sleepTask = new SleepTask(flemington);
+                            needTasks.Add(sleepTask);
+                            return;
+                        }
+
+                        break;
+                    case NeedType.Social:
+                        // Is there anyone to talk to?
+                        Flemington availableToTalk = Village.I.GetAvailableFlemington(flemington);
+
+                        if (availableToTalk != null)
+                        {
+                            TalkTask talkTask = new TalkTask(flemington, availableToTalk);
+                            needTasks.Add(talkTask);
+                        }
+
+                        break;
+                    case NeedType.Food:
+                        //if (flemington.Carrying != null && flemington.Carrying.Name == "Food")
+                        //{
+
+                        //    return new EatState(flemington);
+                        //}
+
+                        //Item food = Village.I.GetUnreservedItemOfType(DataLibrary.I.Items["Food"]);
+
+                        //if (food != null)
+                        //    return NewTaskState(new GrabTask(food));
+
+                        break;
+                }
+            }
+        }
+        while (true);
     }
 
     public void Died()
     {
-        if (CurrentTask != null)
-            if (CurrentTask != RootTask)
-                CurrentTask.Cancel();
+        rootTask.DoerJustDied();
 
-        if (RootTask != null)
+        if (rootTask != currentTask)
         {
-            RootTask.RemakeAvailable();
-            DoneWithRoot();
+            currentTask.Cancel();
+            //RootTask.Cancel();
         }
-    }
 
-    public void DoneWithRoot(Task t = null)
-    {
-        RootTask.OnCompleted -= DoneWithRoot;
-        SetState(idleState);
+        //if (CurrentTask != null)
+        //    if (CurrentTask != rootTask)
+        //        CurrentTask.Cancel();
 
-        currentTaskState.FinishWithTask(null);
-        currentTaskState = null;
-        RootTask = null;
+        //if (rootTask != null)
+        //{
+        //    rootTask.RemakeAvailable();
+        //    DoneWithRoot();
+        //}
     }
 
     public string GetStateText()
     {
-        if (currentState != null)
+        if (currentTask != null)
         {
             string str = "";
 
-            if (currentState.RootState != currentState)
-                str += $"{currentState.RootState.GetInspectText()}\n";
+            //if (currentState.RootState != currentState)
+            //    str += $"{currentState.RootState.GetInspectText()}\n";
 
-            str += currentState.GetInspectText();
+            str += currentTask.GetTextString();
 
             return str;
         }

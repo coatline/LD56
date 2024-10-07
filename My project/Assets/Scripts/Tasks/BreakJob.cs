@@ -22,5 +22,5 @@ public class BreakJob : Job
             availableTasks.Add(NewTask);
     }
 
-    HitTask NewTask => new HitTask(this, ToBreak);
+    HitTask NewTask => new HitTask(ToBreak);
 }
