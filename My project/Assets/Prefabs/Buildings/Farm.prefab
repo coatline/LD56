@@ -125,6 +125,7 @@ MonoBehaviour:
   - {fileID: 4615575244142802454}
   - {fileID: 3371940610067294336}
   - {fileID: 4325669713304367303}
+  spawnInterval: 40
 --- !u!212 &5220368927910530025
 SpriteRenderer:
   m_ObjectHideFlags: 0

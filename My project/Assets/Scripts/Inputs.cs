@@ -46,29 +46,32 @@ public class Inputs : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (toBuild != null)
+            if (C.MouseIsOverUI() == false)
             {
-                if (canPlace)
+                if (toBuild != null)
                 {
-                    Village.I.CreateBuildingOfType(toBuild, mouseWorldPosition);
-                }
-            }
-            else
-            {
-                GameObject gob = C.GobUnderMouse(mouseWorldPosition);
-
-                if (gob != null)
-                {
-                    IInspectable inspectable = gob.GetComponent<IInspectable>();
-
-                    if (inspectable != null)
+                    if (canPlace)
                     {
-                        inspector.Inspect(inspectable);
-                        camFollow.SetFollow(inspectable.Transform);
+                        Village.I.CreateBuildingOfType(toBuild, mouseWorldPosition);
                     }
                 }
-                else if (C.MouseIsOverUI() == false)
-                    inspector.Inspect(null);
+                else
+                {
+                    GameObject gob = C.GobUnderMouse(mouseWorldPosition);
+
+                    if (gob != null)
+                    {
+                        IInspectable inspectable = gob.GetComponent<IInspectable>();
+
+                        if (inspectable != null)
+                        {
+                            inspector.Inspect(inspectable);
+                            camFollow.SetFollow(inspectable.Transform);
+                        }
+                    }
+                    else
+                        inspector.Inspect(null);
+                }
             }
         }
         else if (Input.GetMouseButtonDown(1))

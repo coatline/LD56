@@ -82,8 +82,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toDeliver:
-    Item: {fileID: 11400000, guid: ff92ee27e68f11a40948791b2357bcfd, type: 2}
-    Count: 7
+    Item: {fileID: 11400000, guid: c54249512e1508e4e9a22f3f64729857, type: 2}
+    Count: 8
   percentText: {fileID: 1248420635546502679}
   sr: {fileID: 5220368927910530025}
   type: {fileID: 11400000, guid: 3a3d0ec4209e1e14cbfdf092e8fef60e, type: 2}
@@ -91,6 +91,7 @@ MonoBehaviour:
   - {fileID: 1881409905146970633}
   - {fileID: 7226332977341070907}
   - {fileID: 4615575244142802454}
+  spawnInterval: 23
 --- !u!212 &5220368927910530025
 SpriteRenderer:
   m_ObjectHideFlags: 0

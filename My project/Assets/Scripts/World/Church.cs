@@ -1,31 +1,15 @@
 using System.Collections;
 using UnityEngine;
 
-public class Church : Building
+public class Church : ProductionBuilding
 {
     [SerializeField] Flemington flemingtonPrefab;
 
-    protected override void Complete()
-    {
-        base.Complete();
-        StartCoroutine(GrowInterval());
-    }
-
-    IEnumerator GrowInterval()
-    {
-        while (true)
-        {
-            SpawnFlem();
-            yield return new WaitForSeconds(7f);
-        }
-    }
-
-    void SpawnFlem()
+    protected override void Spawn()
     {
         Instantiate(flemingtonPrefab, transform.position, Quaternion.identity);
-        //SoundManager.I.PlaySound("Farm Produce", transform.position);
     }
 
     public override string Name => "Church";
-    public override string Content => base.Content + "\nCreates new Flemingtons\nProtect at all costs!\n";
+    public override string Content => $"Produces a Flemington every {spawnInterval}s.\n" + base.Content;
 }

@@ -39677,7 +39677,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 4.86}
+  m_AnchoredPosition: {x: 7.49, y: 4.5}
   m_SizeDelta: {x: 2.273, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1112932227
@@ -41214,24 +41214,32 @@ MonoBehaviour:
     smallWorms: 2
   - downTime: 30
     largeWorms: 0
-    mediumWorms: 1
-    smallWorms: 3
-  - downTime: 30
-    largeWorms: 0
     mediumWorms: 2
     smallWorms: 1
-  - downTime: 30
+  - downTime: 39.8
     largeWorms: 1
-    mediumWorms: 0
+    mediumWorms: 1
+    smallWorms: 1
+  - downTime: 40.6
+    largeWorms: 1
+    mediumWorms: 2
     smallWorms: 2
-  - downTime: 40
+  - downTime: 43.6
     largeWorms: 2
     mediumWorms: 1
-    smallWorms: 0
+    smallWorms: 1
   - downTime: 50
     largeWorms: 3
-    mediumWorms: 0
-    smallWorms: 1
+    mediumWorms: 1
+    smallWorms: 2
+  - downTime: 60
+    largeWorms: 3
+    mediumWorms: 3
+    smallWorms: 2
+  - downTime: 70
+    largeWorms: 4
+    mediumWorms: 4
+    smallWorms: 4
 --- !u!4 &1623117264
 Transform:
   m_ObjectHideFlags: 0
@@ -42799,7 +42807,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.1, y: 4.98}
+  m_AnchoredPosition: {x: -8.12, y: 4.5}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2039548130
